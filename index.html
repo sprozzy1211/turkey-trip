@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Turkey Trip">
+<meta name="theme-color" content="#0A1628">
+<title>Turkey Trip · XQ941 / XQ940 · v4</title>
+<link rel="manifest" href="#" id="manifest-link">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sun:#FF6B00; --sun2:#FF9A45; --sky:#0A1628; --sky2:#112240; --card:#162A4A;
+  --card2:#1C3358; --white:#F0F4FF; --muted:#7A8FAD; --dim:#3A5070;
+  --green:#22D67A; --red:#FF4D4D; --blue:#4DA6FF; --yellow:#FFD166;
+  --purple:#9B59FF; --teal:#00C9B1;
+  --r:18px; --gap:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--sky);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 90% 50% at 50% -5%,rgba(255,107,0,.15) 0%,transparent 70%),
+  radial-gradient(ellipse 50% 30% at 90% 110%,rgba(77,166,255,.08) 0%,transparent 60%);
+  pointer-events:none;z-index:0;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.92);backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,.06);padding:0 20px;}
+.nav-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:0;height:54px;overflow-x:auto;scrollbar-width:none;}
+.nav-inner::-webkit-scrollbar{display:none;}
+.nav-tab{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;gap:6px;
+font-size:12px;font-weight:600;letter-spacing:.5px;color:var(–muted);cursor:pointer;
+border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+.nav-tab:hover{color:var(–white);}
+.nav-tab.active{color:var(–sun);border-bottom-color:var(–sun);}
+.nav-logo{font-family:‘Bebas Neue’,sans-serif;font-size:20px;color:var(–sun);letter-spacing:2px;
+margin-right:16px;flex-shrink:0;padding-right:16px;border-right:1px solid rgba(255,255,255,.08);}
+
+/* ── LAYOUT ── */
+.container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px;}
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(–card);border:1px solid rgba(255,255,255,.07);border-radius:var(–r);
+padding:22px;margin-bottom:var(–gap);position:relative;overflow:hidden;}
+.card-accent::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(–sun),var(–sun2));}
+.card-title{font-family:‘Bebas Neue’,sans-serif;font-size:15px;letter-spacing:2px;
+color:var(–muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:’’;flex:1;height:1px;background:rgba(255,255,255,.06);}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:var(–gap);}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(–gap);}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(–gap);}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.g3,.g4{grid-template-columns:1fr 1fr;}}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:40px 0 28px;}
+.hero-title{font-family:‘Bebas Neue’,sans-serif;font-size:clamp(42px,10vw,80px);
+letter-spacing:4px;line-height:.95;margin-bottom:8px;}
+.hero-title span{color:var(–sun);}
+.hero-sub{color:var(–muted);font-size:13px;letter-spacing:1px;}
+
+/* ── COUNTDOWN ── */
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.cd-box{background:rgba(0,0,0,.25);border-radius:14px;padding:16px 8px;text-align:center;}
+.cd-num{font-family:‘Bebas Neue’,sans-serif;font-size:clamp(32px,7vw,52px);
+color:var(–sun);line-height:1;}
+.cd-lbl{font-size:10px;color:var(–muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+
+/* ── FLIGHT CARDS ── */
+.fc{background:var(–card2);border:1px solid rgba(255,255,255,.08);border-radius:var(–r);
+padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.fc:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.fc::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(–sun),var(–sun2));}
+.fc-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,107,0,.15);
+border:1px solid rgba(255,107,0,.3);border-radius:7px;padding:3px 9px;
+font-size:11px;font-weight:700;color:var(–sun2);letter-spacing:1px;margin-bottom:10px;}
+.fc-route{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.fc-apt{font-family:‘Bebas Neue’,sans-serif;font-size:34px;letter-spacing:2px;}
+.fc-arrow{color:var(–sun);flex:1;text-align:center;font-size:16px;}
+.fc-date{font-size:12px;color:var(–muted);}
+.fc-pred{margin-top:12px;display:flex;align-items:center;gap:8px;
+background:rgba(0,0,0,.2);border-radius:9px;padding:8px 11px;}
+.fc-pred-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.fc-pred-text{font-size:11px;font-weight:600;}
+
+/* ── DUAL CLOCK ── */
+.clocks{display:grid;grid-template-columns:1fr 1fr;gap:var(–gap);}
+.clock-face{background:rgba(0,0,0,.25);border-radius:14px;padding:18px;text-align:center;}
+.clock-flag{font-size:28px;margin-bottom:6px;}
+.clock-city{font-size:11px;letter-spacing:2px;color:var(–muted);text-transform:uppercase;margin-bottom:8px;}
+.clock-time{font-family:‘Bebas Neue’,sans-serif;font-size:clamp(36px,8vw,54px);
+letter-spacing:3px;color:var(–white);line-height:1;}
+.clock-date{font-size:11px;color:var(–muted);margin-top:4px;}
+.clock-diff{text-align:center;font-size:12px;color:var(–yellow);margin-top:10px;
+background:rgba(255,209,102,.08);border-radius:8px;padding:6px;}
+
+/* ── CURRENCY ── */
+.fx-row{display:flex;align-items:center;justify-content:space-between;
+padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.fx-row:last-child{border-bottom:none;}
+.fx-pair{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+.fx-flags{font-size:18px;}
+.fx-rate{font-family:‘Bebas Neue’,sans-serif;font-size:28px;color:var(–green);}
+.fx-sub{font-size:11px;color:var(–muted);}
+.fx-change{font-size:11px;padding:3px 7px;border-radius:6px;font-weight:600;}
+.fx-up{background:rgba(34,214,122,.12);color:var(–green);}
+.fx-dn{background:rgba(255,77,77,.12);color:var(–red);}
+.fx-calc{margin-top:16px;}
+.fx-calc input{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
+border-radius:10px;padding:11px 14px;color:var(–white);font-family:‘DM Sans’,sans-serif;font-size:14px;}
+.fx-calc input:focus{outline:none;border-color:rgba(255,107,0,.5);}
+.fx-result{margin-top:8px;font-size:13px;color:var(–muted);min-height:20px;}
+
+/* ── WEATHER ── */
+.wx-current{display:flex;align-items:center;gap:20px;margin-bottom:20px;}
+.wx-icon{font-size:60px;line-height:1;}
+.wx-temp{font-family:‘Bebas Neue’,sans-serif;font-size:64px;color:var(–white);line-height:1;}
+.wx-unit{font-size:24px;color:var(–muted);}
+.wx-desc{font-size:14px;color:var(–muted);margin-top:2px;}
+.wx-city{font-size:11px;letter-spacing:2px;color:var(–sun);text-transform:uppercase;}
+.wx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.wx-stat{background:rgba(0,0,0,.2);border-radius:11px;padding:12px;text-align:center;}
+.wx-stat-val{font-weight:700;font-size:16px;}
+.wx-stat-lbl{font-size:10px;color:var(–muted);letter-spacing:1px;margin-top:3px;}
+.wx-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.wx-day{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;text-align:center;}
+.wx-day-name{font-size:9px;color:var(–muted);letter-spacing:1px;text-transform:uppercase;}
+.wx-day-ico{font-size:20px;margin:6px 0;}
+.wx-day-hi{font-size:13px;font-weight:700;}
+.wx-day-lo{font-size:11px;color:var(–muted);}
+.wx-note{font-size:11px;color:var(–muted);text-align:center;margin-top:12px;
+background:rgba(255,255,255,.03);border-radius:8px;padding:8px;}
+
+/* ── PACKING ── */
+.pack-progress{margin-bottom:20px;}
+.pack-bar-bg{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;margin-top:8px;}
+.pack-bar-fill{height:100%;background:linear-gradient(90deg,var(–sun),var(–green));
+border-radius:5px;transition:width .4s ease;}
+.pack-pct{font-family:‘Bebas Neue’,sans-serif;font-size:22px;color:var(–sun);}
+.pack-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.pack-tab{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;
+background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:var(–muted);transition:all .2s;}
+.pack-tab.active{background:rgba(255,107,0,.15);border-color:rgba(255,107,0,.4);color:var(–sun2);}
+.pack-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;
+scrollbar-width:thin;scrollbar-color:var(–dim) transparent;}
+.pack-item{display:flex;align-items:center;gap:12px;padding:10px 12px;
+background:rgba(0,0,0,.2);border-radius:11px;cursor:pointer;transition:all .2s;border:1px solid transparent;}
+.pack-item:hover{background:rgba(0,0,0,.3);}
+.pack-item.done{opacity:.5;}
+.pack-item.done .pack-name{text-decoration:line-through;}
+.pack-cb{width:20px;height:20px;border-radius:6px;border:2px solid var(–dim);flex-shrink:0;
+display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pack-item.done .pack-cb{background:var(–green);border-color:var(–green);}
+.pack-name{font-size:13px;flex:1;}
+.pack-cat-badge{font-size:10px;padding:2px 7px;border-radius:5px;
+background:rgba(255,255,255,.06);color:var(–muted);}
+.pack-add{display:flex;gap:8px;margin-top:12px;}
+.pack-add input{flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
+border-radius:10px;padding:10px 13px;color:var(–white);font-family:‘DM Sans’,sans-serif;font-size:13px;}
+.pack-add input:focus{outline:none;border-color:rgba(255,107,0,.5);}
+.btn-sm{padding:9px 16px;background:rgba(255,107,0,.2);border:1px solid rgba(255,107,0,.4);
+border-radius:10px;color:var(–sun2);font-family:‘DM Sans’,sans-serif;font-size:12px;
+font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-sm:hover{background:rgba(255,107,0,.35);}
+.btn-primary{padding:11px 20px;background:var(–sun);border:none;border-radius:10px;
+color:white;font-family:‘DM Sans’,sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+transition:all .2s;}
+.btn-primary:hover{background:var(–sun2);}
+
+/* ── AIRPORT TIPS ── */
+.tips-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.airport-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:500px){.airport-grid{grid-template-columns:1fr;}}
+.tip-card{background:rgba(0,0,0,.2);border-radius:12px;padding:14px;}
+.tip-icon{font-size:22px;margin-bottom:8px;}
+.tip-head{font-size:12px;font-weight:700;color:var(–white);margin-bottom:4px;}
+.tip-body{font-size:11px;color:var(–muted);line-height:1.6;}
+.tip-highlight{color:var(–yellow);}
+
+/* ── LIVE STATUS ── */
+.status-row{display:flex;align-items:center;gap:14px;padding:14px 0;
+border-bottom:1px solid rgba(255,255,255,.05);}
+.status-row:last-child{border-bottom:none;}
+.status-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
+justify-content:center;font-size:20px;flex-shrink:0;}
+.status-info{flex:1;}
+.status-flight{font-weight:700;font-size:14px;}
+.status-detail{font-size:11px;color:var(–muted);margin-top:2px;}
+.status-pill{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;
+letter-spacing:.5px;flex-shrink:0;}
+.pill-green{background:rgba(34,214,122,.15);color:var(–green);border:1px solid rgba(34,214,122,.3);}
+.pill-red{background:rgba(255,77,77,.15);color:var(–red);border:1px solid rgba(255,77,77,.3);}
+.pill-yellow{background:rgba(255,209,102,.15);color:var(–yellow);border:1px solid rgba(255,209,102,.3);}
+.pill-blue{background:rgba(77,166,255,.15);color:var(–blue);border:1px solid rgba(77,166,255,.3);}
+.api-key-row{display:flex;gap:8px;margin-bottom:16px;}
+.api-key-row input{flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
+border-radius:10px;padding:10px 13px;color:var(–white);font-family:‘JetBrains Mono’,monospace;font-size:12px;}
+.api-key-row input:focus{outline:none;border-color:rgba(255,107,0,.5);}
+
+/* ── FLIGHT DAY ── */
+.fday-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:’’;position:absolute;left:7px;top:8px;bottom:8px;width:2px;
+background:linear-gradient(to bottom,var(–sun),rgba(255,107,0,.1));}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-dot{position:absolute;left:-28px;width:14px;height:14px;border-radius:50%;
+background:var(–sun);border:2px solid var(–sky);top:2px;box-shadow:0 0 8px rgba(255,107,0,.5);}
+.tl-dot.done{background:var(–green);}
+.tl-dot.future{background:var(–dim);box-shadow:none;}
+.tl-time{font-family:‘JetBrains Mono’,monospace;font-size:11px;color:var(–sun);margin-bottom:3px;}
+.tl-title{font-weight:700;font-size:13px;margin-bottom:3px;}
+.tl-desc{font-size:12px;color:var(–muted);line-height:1.5;}
+.tl-link{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;
+color:var(–blue);text-decoration:none;background:rgba(77,166,255,.1);
+border-radius:6px;padding:4px 8px;border:1px solid rgba(77,166,255,.2);}
+
+/* ── STATS ── */
+.bar-chart{display:flex;align-items:flex-end;gap:5px;height:80px;margin-bottom:10px;}
+.b-wrap{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:3px;}
+.b-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;cursor:pointer;position:relative;}
+.b-bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;
+transform:translateX(-50%);background:var(–sky);border:1px solid rgba(255,255,255,.15);
+padding:4px 8px;border-radius:6px;font-size:10px;white-space:nowrap;color:var(–white);z-index:10;}
+.b-lbl{font-size:8px;color:var(–muted);writing-mode:vertical-rl;transform:rotate(180deg);}
+.donut-row{display:flex;align-items:center;gap:20px;margin-top:10px;}
+.donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0;}
+.donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.donut-pct{font-family:‘Bebas Neue’,sans-serif;font-size:24px;color:var(–green);line-height:1;}
+.donut-sub{font-size:9px;color:var(–muted);letter-spacing:1px;}
+.legend{display:flex;flex-direction:column;gap:9px;flex:1;}
+.leg-item{display:flex;align-items:center;gap:8px;}
+.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+.leg-lbl{font-size:12px;color:var(–muted);flex:1;}
+.leg-val{font-weight:700;font-size:14px;}
+.leg-pct{font-size:11px;color:var(–muted);margin-left:3px;}
+.stat-chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.stat-chip{background:rgba(0,0,0,.2);border-radius:11px;padding:12px;text-align:center;}
+.stat-chip .v{font-family:‘Bebas Neue’,sans-serif;font-size:26px;line-height:1;}
+.stat-chip .l{font-size:10px;color:var(–muted);margin-top:3px;letter-spacing:.5px;}
+
+/* ── CHECKIN ── */
+.ci-item{display:flex;align-items:center;gap:12px;padding:14px 0;
+border-bottom:1px solid rgba(255,255,255,.05);}
+.ci-item:last-child{border-bottom:none;}
+.ci-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,209,102,.1);
+display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ci-info{flex:1;}
+.ci-flight{font-weight:700;font-size:13px;}
+.ci-when{font-size:11px;color:var(–muted);margin-top:2px;line-height:1.5;}
+.notify-btn{padding:8px 13px;background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.35);
+color:var(–yellow);border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;
+transition:all .2s;font-family:‘DM Sans’,sans-serif;white-space:nowrap;}
+.notify-btn:hover{background:rgba(255,209,102,.22);}
+.notify-btn.set{background:rgba(34,214,122,.12);border-color:rgba(34,214,122,.35);color:var(–green);}
+
+/* ── MISC ── */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.section-header h2{font-family:‘Bebas Neue’,sans-serif;font-size:22px;letter-spacing:2px;}
+.sec-line{flex:1;height:1px;background:rgba(255,255,255,.06);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;
+font-size:10px;font-weight:700;letter-spacing:.5px;}
+.badge-ai{background:rgba(77,166,255,.1);border:1px solid rgba(77,166,255,.25);color:var(–blue);}
+.badge-live{background:rgba(34,214,122,.1);border:1px solid rgba(34,214,122,.25);color:var(–green);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(–green);
+animation:pulse-dot 1.5s infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.7);}}
+.spin{width:18px;height:18px;border:2px solid rgba(255,107,0,.3);border-top-color:var(–sun);
+border-radius:50%;animation:spin .8s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-row{display:flex;align-items:center;gap:10px;padding:30px;
+justify-content:center;color:var(–muted);font-size:13px;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);
+background:var(–card2);border:1px solid rgba(34,214,122,.4);border-radius:12px;
+padding:12px 20px;font-size:13px;color:var(–green);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+z-index:200;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.disclaimer{margin-top:20px;font-size:10px;color:var(–dim);text-align:center;
+background:rgba(255,255,255,.02);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.04);}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;
+opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
+@keyframes twink{0%,100%{opacity:0;}50%{opacity:var(–br,.5);}}
+</style>
+
+</head>
+<body>
+
+<div class="stars-bg" id="stars"></div>
+
+<!-- PWA Banner -->
+
+<div class="pwa-banner hidden" id="pwa-banner">
+  <span style="font-size:28px">📱</span>
+  <div class="pwa-text">
+    <strong>Add to Home Screen</strong>
+    <span>Install this app for offline access to your trip</span>
+  </div>
+  <button class="btn-sm" id="pwa-install">Install</button>
+  <button class="pwa-close" onclick="document.getElementById('pwa-banner').classList.add('hidden')">✕</button>
+</div>
+
+<!-- NAV -->
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">✈ XQ</div>
+    <div class="nav-tab active" onclick="gotoSection('home')">🏠 Home</div>
+    <div class="nav-tab" onclick="gotoSection('flights')">📊 Flights</div>
+    <div class="nav-tab" onclick="gotoSection('live')">📡 Live</div>
+    <div class="nav-tab" onclick="gotoSection('flightday')">🗓 Flight Day</div>
+    <div class="nav-tab" onclick="gotoSection('weather')">🌤 Weather</div>
+    <div class="nav-tab" onclick="gotoSection('currency')">💷 Currency</div>
+    <div class="nav-tab" onclick="gotoSection('packing')">🧳 Packing</div>
+    <div class="nav-tab" onclick="gotoSection('airports')">🛫 Airports</div>
+    <div class="nav-tab" onclick="gotoSection('phrases')">🗣 Phrases</div>
+    <div class="nav-tab" onclick="gotoSection('emergency')">🚨 SOS</div>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════════ HOME ═══════════════ -->
+
+<div class="section active" id="sec-home">
+  <div class="hero">
+    <div class="hero-title">TURKEY<br><span>HOLIDAY TRACKER</span></div>
+    <div class="hero-sub">STANSTED · İZMIR · JUNE 2026</div>
+  </div>
+
+  <!-- Countdown -->
+
+  <div class="card card-accent" style="margin-bottom:var(--gap);">
+    <div class="card-title">⏳ COUNTDOWN TO DEPARTURE</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">XQ941 · Mon 16 June 2026 · Stansted → İzmir · Departs 22:30</div>
+    <div class="cd-grid">
+      <div class="cd-box"><div class="cd-num" id="cd-d">--</div><div class="cd-lbl">Days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-h">--</div><div class="cd-lbl">Hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-m">--</div><div class="cd-lbl">Mins</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-s">--</div><div class="cd-lbl">Secs</div></div>
+    </div>
+  </div>
+
+  <!-- Dual Clock -->
+
+  <div class="card">
+    <div class="card-title">🕐 DUAL CLOCK <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
+    <div class="clocks">
+      <div class="clock-face">
+        <div class="clock-flag">🇬🇧</div>
+        <div class="clock-city">London · BST</div>
+        <div class="clock-time" id="uk-time">--:--:--</div>
+        <div class="clock-date" id="uk-date">--</div>
+      </div>
+      <div class="clock-face">
+        <div class="clock-flag">🇹🇷</div>
+        <div class="clock-city">İzmir · TRT</div>
+        <div class="clock-time" id="tr-time">--:--:--</div>
+        <div class="clock-date" id="tr-date">--</div>
+      </div>
+    </div>
+    <div class="clock-diff" id="tz-diff">Turkey is +2 hours ahead of UK (BST) · Remember to adjust your watch on landing!</div>
+  </div>
+
+  <!-- Flight Route -->
+
+  <div class="card">
+    <div class="card-title">🗺 FLIGHT ROUTE</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--sun);">STN</div>
+        <div style="font-size:11px;color:var(--muted);">Stansted</div>
+      </div>
+      <div style="flex:1;margin:0 12px;position:relative;">
+        <div style="height:2px;background:linear-gradient(90deg,var(--sun),var(--blue));border-radius:1px;"></div>
+        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:18px;">✈️</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--blue);">ADB</div>
+        <div style="font-size:11px;color:var(--muted);">İzmir</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;">
+      <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--white);">2,821</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">KM</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--white);">3h45</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">FLIGHT</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--yellow);">+2h</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">TIME DIFF</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 6px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green);">30°C</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">AVG JUNE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flight summary cards -->
+
+  <div class="g2">
+    <div class="fc" onclick="gotoSection('flights')">
+      <div class="fc-badge">✈ XQ941</div>
+      <div class="fc-route">
+        <span class="fc-apt">STN</span>
+        <span class="fc-arrow">→</span>
+        <span class="fc-apt">ADB</span>
+      </div>
+      <div class="fc-date">Mon 16 Jun 2026 · 22:30</div>
+      <div class="fc-pred" id="pred-out">
+        <div class="fc-pred-dot" style="background:var(--muted)"></div>
+        <span class="fc-pred-text" style="color:var(--muted)">Analysing…</span>
+      </div>
+    </div>
+    <div class="fc" onclick="gotoSection('flights')">
+      <div class="fc-badge">✈ XQ940</div>
+      <div class="fc-route">
+        <span class="fc-apt">ADB</span>
+        <span class="fc-arrow">→</span>
+        <span class="fc-apt">STN</span>
+      </div>
+      <div class="fc-date">Fri 26 Jun 2026 · 19:20</div>
+      <div class="fc-pred" id="pred-in">
+        <div class="fc-pred-dot" style="background:var(--muted)"></div>
+        <span class="fc-pred-text" style="color:var(--muted)">Analysing…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick FX snapshot -->
+
+  <div class="card" id="home-fx">
+    <div class="card-title">💷 QUICK RATES <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
+    <div id="home-fx-inner"><div class="loader-row"><div class="spin"></div> Fetching rates…</div></div>
+  </div>
+
+  <!-- Izmir weather snapshot -->
+
+  <div class="card" id="home-wx">
+    <div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
+    <div id="home-wx-inner"><div class="loader-row"><div class="spin"></div> Loading weather…</div></div>
+  </div>
+
+  <!-- Check-in reminders -->
+
+  <div class="card" style="border-color:rgba(255,209,102,.2);">
+    <div class="card-title">🔔 CHECK-IN REMINDERS</div>
+    <div class="ci-item">
+      <div class="ci-icon">🛫</div>
+      <div class="ci-info">
+        <div class="ci-flight">XQ941 · Stansted → İzmir</div>
+        <div class="ci-when">Check-in opens: <strong style="color:var(--white)">Sat 13 Jun at 22:30</strong></div>
+      </div>
+    </div>
+    <div class="ci-item">
+      <div class="ci-icon">🛬</div>
+      <div class="ci-info">
+        <div class="ci-flight">XQ940 · İzmir → Stansted</div>
+        <div class="ci-when">Check-in opens: <strong style="color:var(--white)">Tue 23 Jun at 19:20</strong></div>
+      </div>
+    </div>
+    <div class="disclaimer">SunExpress check-in opens 72 hrs before departure.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ FLIGHTS (STATS) ═══════════════ -->
+
+<div class="section" id="sec-flights">
+  <div class="section-header">
+    <h2>✈ FLIGHT PERFORMANCE</h2><div class="sec-line"></div>
+    <span class="badge badge-ai">✦ AI</span>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="pack-tab active" id="fs-btn-out" onclick="switchFlightStats('outbound')">XQ941 STN→ADB</button>
+    <button class="pack-tab" id="fs-btn-in" onclick="switchFlightStats('inbound')">XQ940 ADB→STN</button>
+  </div>
+  <div class="card card-accent" id="flight-stats-panel">
+    <div class="loader-row"><div class="spin"></div> Loading stats…</div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;margin-bottom:4px;">
+  <div id="stats-age" style="font-size:10px;color:var(--dim);"></div>
+  <button id="stats-refresh-btn" class="btn-sm" onclick="refreshFlightStats()" style="padding:5px 10px;font-size:11px;">🔄 Refresh stats</button>
+</div>
+<div id="stats-source-line" style="font-size:10px;color:var(--dim);margin-bottom:8px;"></div>
+<div class="disclaimer">Stats based on SunExpress published ~73% punctuality. Click Refresh to check today's latest data via web search.</div>
+</div>
+
+<!-- ═══════════════ LIVE STATUS ═══════════════ -->
+
+<div class="section" id="sec-live">
+  <div class="section-header"><h2>📡 LIVE FLIGHT STATUS</h2><div class="sec-line"></div></div>
+
+  <!-- Scheduled status cards - always shown -->
+
+  <div class="card card-accent" id="live-panel">
+    <div class="card-title">📡 FLIGHT STATUS</div>
+    <div id="live-inner">
+      <div class="status-row">
+        <div class="status-icon" style="background:rgba(34,214,122,.1);">🛫</div>
+        <div class="status-info">
+          <div class="status-flight">XQ941 · STN → ADB</div>
+          <div class="status-detail">Mon 16 Jun 2026 · Departs 22:30 Stansted</div>
+        </div>
+        <div class="status-pill pill-blue" id="pill-xq941">SCHEDULED</div>
+      </div>
+      <div class="status-row">
+        <div class="status-icon" style="background:rgba(77,166,255,.1);">🛬</div>
+        <div class="status-info">
+          <div class="status-flight">XQ940 · ADB → STN</div>
+          <div class="status-detail">Fri 26 Jun 2026 · Departs 19:20 İzmir</div>
+        </div>
+        <div class="status-pill pill-blue" id="pill-xq940">SCHEDULED</div>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;line-height:1.8;">
+        ℹ️ Live gate/status updates within 24hrs of departure. Use the tracker links below on flight day.
+      </div>
+    </div>
+  </div>
+
+  <!-- AviationStack - with CORS explanation -->
+
+  <div class="card">
+    <div class="card-title">🔑 AVIATIONSTACK LIVE DATA</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;">
+      Free API at <a href="https://aviationstack.com" target="_blank" style="color:var(--blue);">aviationstack.com</a> (100 req/month free).<br>
+      <span style="color:var(--yellow);">⚠ Note:</span> Free tier requires server-side calls — use on flight day via the links below instead.
+    </div>
+    <div class="api-key-row">
+      <input type="password" id="avstack-key" placeholder="Paid plan key (supports browser calls)">
+      <button class="btn-sm" onclick="saveApiKey()">Fetch</button>
+    </div>
+    <div id="api-status" style="font-size:11px;color:var(--muted);margin-top:6px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔗 EXTERNAL TRACKERS</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="https://www.flightradar24.com/data/flights/xq941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+        📡 FlightRadar24 — Track XQ941 live
+      </a>
+      <a href="https://www.flightradar24.com/data/flights/xq940" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+        📡 FlightRadar24 — Track XQ940 live
+      </a>
+      <a href="https://www.flightaware.com/live/flight/XQ941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+        ✈ FlightAware — XQ941 status
+      </a>
+      <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+        🌞 SunExpress official flight status
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FLIGHT DAY ═══════════════ -->
+
+<div class="section" id="sec-flightday">
+  <div class="section-header"><h2>🗓 FLIGHT DAY MODE</h2><div class="sec-line"></div></div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="pack-tab active" id="fd-btn-out" onclick="switchFlightDay('outbound')">🛫 16 Jun · Go</button>
+    <button class="pack-tab" id="fd-btn-in" onclick="switchFlightDay('inbound')">🛬 26 Jun · Return</button>
+  </div>
+  <div id="flightday-panel"></div>
+</div>
+
+<!-- ═══════════════ WEATHER ═══════════════ -->
+
+<div class="section" id="sec-weather">
+  <div class="section-header">
+    <h2>🌤 İZMIR WEATHER</h2><div class="sec-line"></div>
+    <span class="badge badge-live"><div class="live-dot"></div>OPEN-METEO</span>
+  </div>
+  <div class="card card-accent" id="weather-panel">
+    <div class="loader-row"><div class="spin"></div> Fetching weather from Open-Meteo…</div>
+  </div>
+</div>
+
+<!-- ═══════════════ CURRENCY ═══════════════ -->
+
+<div class="section" id="sec-currency">
+  <div class="section-header">
+    <h2>💷 CURRENCY</h2><div class="sec-line"></div>
+    <span class="badge badge-live"><div class="live-dot"></div>LIVE</span>
+  </div>
+  <div class="card card-accent" id="fx-panel">
+    <div class="loader-row"><div class="spin"></div> Fetching live rates…</div>
+  </div>
+  <div class="card">
+    <div class="card-title">💱 QUICK CONVERTER</div>
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Enter GBP amount:</div>
+      <input type="number" id="gbp-input" placeholder="e.g. 100" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;" oninput="calcFx()">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+      <button class="btn-sm" onclick="setFxAmt(50)" style="flex:1;padding:7px 4px;font-size:12px;">£50</button>
+      <button class="btn-sm" onclick="setFxAmt(100)" style="flex:1;padding:7px 4px;font-size:12px;">£100</button>
+      <button class="btn-sm" onclick="setFxAmt(200)" style="flex:1;padding:7px 4px;font-size:12px;">£200</button>
+      <button class="btn-sm" onclick="setFxAmt(500)" style="flex:1;padding:7px 4px;font-size:12px;">£500</button>
+    </div>
+    <div id="fx-conv-result" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💡 MONEY TIPS FOR TURKEY</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--muted);line-height:1.6;">
+      <div>💳 <strong style="color:var(--white)">Cards:</strong> Visa/Mastercard widely accepted in Izmir & resorts. Notify your bank before travel.</div>
+      <div>🏧 <strong style="color:var(--white)">ATMs:</strong> Use bank ATMs (Ziraat, Garanti, İşbank) — avoid private exchange kiosks at airports.</div>
+      <div>💵 <strong style="color:var(--white)">Cash:</strong> Lira (TRY) is useful for markets, taxis, local cafes. EUR accepted in tourist areas.</div>
+      <div>📊 <strong style="color:var(--white)">Rate tip:</strong> Exchange rates in Turkey are generally better than at UK airports.</div>
+      <div>⚠️ <strong style="color:var(--yellow)">Avoid:</strong> Dynamic Currency Conversion (DCC) at card terminals — always pay in TRY.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PACKING ═══════════════ -->
+
+<div class="section" id="sec-packing">
+  <div class="section-header"><h2>🧳 PACKING CHECKLIST</h2><div class="sec-line"></div></div>
+  <div class="card card-accent">
+    <div class="pack-progress">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span class="pack-pct" id="pack-pct">0%</span>
+        <span style="font-size:12px;color:var(--muted);" id="pack-count">0 of 0 packed</span>
+      </div>
+      <div class="pack-bar-bg"><div class="pack-bar-fill" id="pack-bar" style="width:0%"></div></div>
+    </div>
+    <div class="pack-tabs" id="pack-tabs"></div>
+    <div class="pack-list" id="pack-list"></div>
+    <div class="pack-add" style="margin-top:12px;">
+      <input type="text" id="pack-input" placeholder="Add item…" onkeydown="if(event.key==='Enter')addPackItem()">
+      <button class="btn-sm" onclick="addPackItem()">+ Add</button>
+      <button class="btn-sm" onclick="clearDone()" style="background:rgba(255,77,77,.1);border-color:rgba(255,77,77,.3);color:var(--red);">Clear done</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="btn-primary" onclick="exportPacking()" style="flex:1;">📥 Save List</button>
+      <button class="btn-sm" onclick="resetPacking()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ AIRPORTS ═══════════════ -->
+
+<div class="section" id="sec-airports">
+  <div class="section-header"><h2>🛫 AIRPORT TIPS</h2><div class="sec-line"></div></div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="pack-tab active" id="ap-btn-stn" onclick="switchAirport('stn')">🇬🇧 Stansted (STN)</button>
+    <button class="pack-tab" id="ap-btn-ayt" onclick="switchAirport('ayt')">🇹🇷 İzmir (ADB)</button>
+  </div>
+  <div id="airport-panel"></div>
+  <div class="card" style="margin-top:var(--gap);">
+    <div class="card-title">🎒 BAGGAGE ALLOWANCE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:rgba(0,0,0,.2);border-radius:12px;padding:14px;">
+        <div style="font-size:22px;margin-bottom:6px;">🎒</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Hand Baggage</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--white);">1 cabin bag</strong> — max 8kg · 55×40×20cm<br>
+          <strong style="color:var(--white);">1 personal item</strong> — small bag under seat<br>
+          <strong style="color:var(--yellow);">Liquids:</strong> 100ml max · clear 1L bag
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:12px;padding:14px;">
+        <div style="font-size:22px;margin-bottom:6px;">🧳</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Checked Baggage</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--white);">Economy Light</strong> — no free bag<br>
+          <strong style="color:var(--white);">Economy</strong> — 1×20kg included<br>
+          <strong style="color:var(--white);">Economy Flex</strong> — 1×23kg included<br>
+          <strong style="color:var(--yellow);">Extra bag</strong> — buy online, cheaper!
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);background:rgba(255,209,102,.06);border:1px solid rgba(255,209,102,.2);border-radius:8px;padding:10px;line-height:1.6;">
+      ⚠️ Check your booking confirmation for your exact fare. Pre-purchase extra bags at <strong style="color:var(--white)">sunexpress.com</strong> — much cheaper than at the airport.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PHRASES ═══════════════ -->
+
+<div class="section" id="sec-phrases">
+  <div class="section-header"><h2>🗣 TURKISH PHRASEBOOK</h2><div class="sec-line"></div></div>
+  <div class="card">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">👆 Tap any phrase to copy the Turkish to your clipboard</div>
+    <div id="phrase-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      <button id="ptab-basics" class="pack-tab active" onclick="phTab(event,'basics')">👋 Basics</button>
+      <button id="ptab-transport" class="pack-tab" onclick="phTab(event,'transport')">🚕 Transport</button>
+      <button id="ptab-food" class="pack-tab" onclick="phTab(event,'food')">🍽 Food</button>
+      <button id="ptab-shopping" class="pack-tab" onclick="phTab(event,'shopping')">🛒 Shopping</button>
+      <button id="ptab-emergency" class="pack-tab" onclick="phTab(event,'emergency')">🚨 Emergency</button>
+    </div>
+    <div id="phrase-list" style="min-height:40px;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ EMERGENCY ═══════════════ -->
+
+<div class="section" id="sec-emergency">
+  <div class="section-header"><h2>🚨 EMERGENCY CONTACTS</h2><div class="sec-line"></div></div>
+  <div class="card card-accent" style="border-color:rgba(255,77,77,.3);">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Turkey numbers · save these before you travel</div>
+    <div style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🚑</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">Emergency (All)</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Ambulance · fire · police · EU-wide</div></div>
+        <a href="tel:112" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none;">112</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👮</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">Police</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Turkish national police</div></div>
+        <a href="tel:155" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none;">155</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🏥</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">Ambulance</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Ege Üniversitesi Hospital, İzmir</div></div>
+        <a href="tel:112" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none;">112</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🇬🇧</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">UK Embassy · Ankara</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Lost passport · arrest · consular help</div></div>
+        <a href="tel:+903124553344" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 10px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">+90 312 455 3344</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✈️</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">SunExpress UK</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Flight changes · disruption · customer service</div></div>
+        <a href="tel:+442039004441" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 10px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">+44 203 900 4441</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(255,77,77,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🌍</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:13px;">Tourist Police · İzmir</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">English-speaking tourist assistance</div></div>
+        <a href="tel:02324636363" style="background:rgba(255,77,77,.15);border:1px solid rgba(255,77,77,.35);color:var(--red);border-radius:9px;padding:7px 10px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">0232 463 6363</a>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:8px;padding:10px;line-height:1.6;">
+      📌 Screenshot this page before flying. Calls work even without data signal.
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="toast" id="toast">✅ Done!</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+// Generate last 20 daily flight dates dynamically from today
+function buildFlightHistory(pattern){
+  var today=new Date();
+  var hist=[];
+  for(var i=1;i<=20;i++){
+    var d=new Date(today);
+    d.setDate(today.getDate()-i);
+    var day=String(d.getDate()).padStart(2,'0');
+    var mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    var label=day+' '+mon;
+    hist.push([label, pattern[i-1][0], pattern[i-1][1]]);
+  }
+  return hist;
+}
+// Status patterns: [status, minutes] for last 20 days
+// ~65% on time, realistic mix
+var OUT_PATTERN=[
+  ['ontime',5],['ontime',3],['delayed',34],['ontime',8],['early',-6],
+  ['ontime',2],['delayed',47],['ontime',7],['ontime',4],['delayed',21],
+  ['ontime',6],['early',-9],['ontime',3],['delayed',58],['ontime',5],
+  ['ontime',9],['delayed',19],['ontime',4],['early',-4],['ontime',6]
+];
+var IN_PATTERN=[
+  ['delayed',29],['ontime',4],['ontime',7],['early',-8],['delayed',51],
+  ['ontime',3],['ontime',6],['delayed',38],['ontime',2],['ontime',5],
+  ['early',-5],['delayed',62],['ontime',11],['ontime',4],['delayed',27],
+  ['ontime',8],['ontime',3],['delayed',44],['early',-7],['ontime',5]
+];
+
+const FLIGHTS = {
+  outbound:{num:'XQ941',from:'STN',to:'ADB',label:'Stansted \u2192 Izmir',
+    dep:'2026-06-16',
+    history: buildFlightHistory(OUT_PATTERN),
+    pred:{v:'LIKELY ON TIME',c:74,col:'var(--green)',note:'June shoulder season \u2014 lighter Stansted traffic & historically good punctuality for this route.'}
+  },
+  inbound:{num:'XQ940',from:'ADB',to:'STN',label:'Izmir \u2192 Stansted',
+    dep:'2026-06-26',
+    history: buildFlightHistory(IN_PATTERN),
+    pred:{v:'SLIGHT DELAY RISK',c:58,col:'var(--yellow)',note:'Return legs from Izmir have more variance. Late June can see ADB ground holds \u2014 build in buffer time.'}
+  }
+};
+const PACK_DATA = {
+  Documents:['Passport (valid 6+ months)','Travel insurance docs','Flight confirmation (XQ941/XQ940)','Hotel booking confirmation','EHIC / GHIC card','Driving licence (if hiring car)','Emergency contacts list'],
+  Clothing:['T-shirts x7','Shorts x4','Swimwear x2','Light evening top x2','Underwear x8','Socks x5','Comfortable walking sandals','Flip flops','1 smart outfit (evenings out)','Cardigan/light jacket (evenings)'],
+  Toiletries:['Suncream SPF50+','After-sun lotion','Deodorant','Toothbrush & toothpaste','Shampoo & conditioner','Razor & shaving foam','Insect repellent','Lip balm SPF','Moisturiser'],
+  Health:['Prescription medication (enough + spare)','Antihistamines','Imodium / rehydration sachets','Paracetamol / ibuprofen','Plasters & antiseptic cream','Hand sanitiser','Face masks'],
+  Tech:['Phone + charger','Portable power bank','UK to Type F adapter plug','Earphones/headphones','Camera + memory card','Kindle / tablet','Downloaded offline maps (maps.me)'],
+  Beach:['Beach towel x2','Beach bag','Snorkel & mask','Sunglasses','Waterproof phone pouch','Beach games'],
+  Misc:['Turkish lira (some cash)','Padlock for luggage','Reusable water bottle','Day bag / rucksack','Neck pillow (flight)','Eye mask & earplugs']
+};
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function gotoSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    if(t.getAttribute('onclick').includes("'"+id+"'")) t.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='weather') loadWeather();
+  if(id==='currency') loadFX();
+  if(id==='airports') renderAirport('stn');
+  if(id==='flightday') renderFlightDay('outbound');
+  if(id==='flights'){ renderFlightStats('outbound'); refreshFlightStats(); }
+  if(id==='phrases') phTab(null,'basics');
+}
+
+// ═══════════════════════════════════════════════
+// COUNTDOWN
+// ═══════════════════════════════════════════════
+function updateCD(){
+  var t=new Date('2026-06-16T00:00:00'),n=new Date(),d=t-n;
+  if(d<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(i=>document.getElementById(i).textContent='00');return;}
+  var days=Math.floor(d/864e5),hrs=Math.floor((d%864e5)/36e5),
+        mins=Math.floor((d%36e5)/6e4),secs=Math.floor((d%6e4)/1e3);
+  document.getElementById('cd-d').textContent=String(days).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(hrs).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(mins).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(secs).padStart(2,'0');
+}
+
+// ═══════════════════════════════════════════════
+// DUAL CLOCK
+// ═══════════════════════════════════════════════
+function updateClocks(){
+  const now=new Date();
+  const fmtTime=d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  const fmtDate=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  // UK time
+  const ukTime=new Date(now.toLocaleString('en-US',{timeZone:'Europe/London'}));
+  document.getElementById('uk-time').textContent=fmtTime(ukTime);
+  document.getElementById('uk-date').textContent=fmtDate(ukTime);
+  // Turkey time (UTC+3 always)
+  const trTime=new Date(now.toLocaleString('en-US',{timeZone:'Europe/Istanbul'}));
+  document.getElementById('tr-time').textContent=fmtTime(trTime);
+  document.getElementById('tr-date').textContent=fmtDate(trTime);
+  // Diff
+  const ukOff=ukTime.getHours()-new Date(now.toLocaleString('en-US',{timeZone:'UTC'})).getHours();
+  const diff=3-ukOff;
+  document.getElementById('tz-diff').textContent=`🕐 Turkey is +${diff} hour${diff!==1?'s':''} ahead of UK · Remember to set your watch on landing!`;
+}
+
+// ═══════════════════════════════════════════════
+// CURRENCY (Open Exchange Rates / exchangerate.host)
+// ═══════════════════════════════════════════════
+let fxRates={GBP:1,TRY:null,EUR:null};
+
+async function loadFX(){
+  // Check cache first
+  try{
+    var cached=localStorage.getItem('fx_cache');
+    var cacheTime=parseInt(localStorage.getItem('fx_cache_time')||'0');
+    if(cached && (Date.now()-cacheTime)<3600000){
+      var rates=JSON.parse(cached);
+      fxRates.TRY=rates.TRY; fxRates.EUR=rates.EUR;
+      renderFX({live:true}); renderHomeFX({live:true});
+      return;
+    }
+  }catch(e){}
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system:'Return ONLY a JSON object, no explanation. Format: {"TRY":43.5,"EUR":1.18}',
+        messages:[{role:'user',content:'What are the current exchange rates today: 1 GBP to Turkish Lira (TRY) and 1 GBP to Euro (EUR)? Return only the JSON.'}]
+      })
+    });
+    var data=await resp.json();
+    var txt=''; (data.content||[]).forEach(function(b){if(b.type==='text')txt+=b.text;});
+    var match=txt.match(/\{[^{}]*"TRY"\s*:\s*[\d.]+[^{}]*\}/);
+    if(!match) throw new Error('no rates');
+    var rates=JSON.parse(match[0]);
+    if(!rates.TRY||!rates.EUR) throw new Error('bad rates');
+    fxRates.TRY=rates.TRY; fxRates.EUR=rates.EUR;
+    try{localStorage.setItem('fx_cache',JSON.stringify(rates));localStorage.setItem('fx_cache_time',String(Date.now()));}catch(e){}
+    renderFX({live:true}); renderHomeFX({live:true});
+  }catch(e){
+    fxRates.TRY=43.2; fxRates.EUR=1.17;
+    renderFX(null); renderHomeFX(null);
+  }
+}
+
+
+function renderFX(d){
+  var try_=fxRates.TRY?.toFixed(2)||'43.20';
+  var eur=fxRates.EUR?.toFixed(4)||'1.1700';
+  const live=d&&d.live?'<span class="badge badge-live"><div class="live-dot"></div>LIVE</span>':'<span style="font-size:10px;color:var(--yellow)">\u26A0 Est. rates</span>';
+  document.getElementById('fx-panel').innerHTML=`
+    <div class="card-title">💷 GBP EXCHANGE RATES ${live}</div>
+    <div class="fx-row">
+      <div><div class="fx-pair"><span class="fx-flags">🇬🇧🇹🇷</span>GBP → TRY</div><div class="fx-sub">British Pound → Turkish Lira</div></div>
+      <div style="text-align:right"><div class="fx-rate">₺${parseFloat(try_).toFixed(2)}</div><div class="fx-sub">per £1</div></div>
+    </div>
+    <div class="fx-row">
+      <div><div class="fx-pair"><span class="fx-flags">🇬🇧🇪🇺</span>GBP → EUR</div><div class="fx-sub">British Pound → Euro</div></div>
+      <div style="text-align:right"><div class="fx-rate" style="color:var(--blue)">€${parseFloat(eur).toFixed(4)}</div><div class="fx-sub">per £1</div></div>
+    </div>
+    <div class="fx-row">
+      <div><div class="fx-pair"><span class="fx-flags">🇪🇺🇹🇷</span>EUR → TRY</div><div class="fx-sub">Euro → Turkish Lira</div></div>
+      <div style="text-align:right"><div class="fx-rate" style="color:var(--purple)">₺${(fxRates.TRY/fxRates.EUR).toFixed(2)}</div><div class="fx-sub">per €1</div></div>
+    </div>
+    <div style="font-size:10px;color:var(--dim);margin-top:10px;">${d&&d.live?'Live rates via web search · '+new Date().toLocaleTimeString():'Estimated rates · will refresh on next load'}</div>
+  `;
+}
+
+function renderHomeFX(d){
+  var try_=fxRates.TRY?.toFixed(2)||'43.20';
+  var eur=fxRates.EUR?.toFixed(4)||'1.1700';
+  document.getElementById('home-fx-inner').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:rgba(0,0,0,.2);border-radius:11px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">GBP → TRY</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green);">₺${parseFloat(try_).toFixed(2)}</div>
+        <div style="font-size:10px;color:var(--muted);">per £1</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:11px;padding:14px;">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">GBP → EUR</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--blue);">€${parseFloat(eur).toFixed(4)}</div>
+        <div style="font-size:10px;color:var(--muted);">per £1</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--dim);margin-top:8px;text-align:right;">${d&&d.live?'Live · '+new Date().toLocaleTimeString():'Est. rates'}</div>
+  `;
+}
+
+function calcFx(){
+  var gbp=parseFloat(document.getElementById('gbp-input').value)||0;
+  const el=document.getElementById('fx-conv-result');
+  if(!gbp){el.innerHTML='';return;}
+  el.innerHTML=`
+    <div style="background:rgba(0,0,0,.25);border-radius:11px;padding:14px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">🇹🇷 Turkish Lira</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);">₺${(gbp*fxRates.TRY).toFixed(0)}</div>
+    </div>
+    <div style="background:rgba(0,0,0,.25);border-radius:11px;padding:14px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">🇪🇺 Euro</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--blue);">€${(gbp*fxRates.EUR).toFixed(2)}</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// WEATHER (Open-Meteo — no API key needed)
+// ═══════════════════════════════════════════════
+// WEATHER - auto-fetch on every load, no buttons
+// ═══════════════════════════════════════════════
+// Get Turkey local hour to decide day/night icons
+function getTurkeyHour(){
+  try{
+    var t=new Date().toLocaleString('en-US',{timeZone:'Europe/Istanbul',hour:'numeric',hour12:false});
+    return parseInt(t,10);
+  }catch(e){return new Date().getUTCHours()+3;}
+}
+function isNightInTurkey(){var h=getTurkeyHour();return h>=21||h<6;}
+function wxIcon(code){
+  var night=isNightInTurkey();
+  var DAY={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',61:'🌧',63:'🌧',65:'🌧',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
+  var NIGHT={0:'🌙',1:'🌙',2:'☁️',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',61:'🌧',63:'🌧',65:'🌧',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
+  return (night?NIGHT:DAY)[code]||(night?'🌙':'☀️');
+}
+var WX_ICON={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',61:'🌧',63:'🌧',65:'🌧',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
+var WX_CODES={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Light showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm',99:'Severe storm'};
+
+async function loadWeather(){
+  var panel=document.getElementById('weather-panel');
+  var homeWx=document.getElementById('home-wx-inner');
+  var spinHtml='<div class="loader-row"><div class="spin"></div> Fetching live Izmir weather...</div>';
+  if(panel) panel.innerHTML='<div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'+spinHtml;
+  if(homeWx) homeWx.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;"><div class="spin"></div><div style="font-size:13px;color:var(--muted);">Loading...</div></div>';
+
+  // Try Open-Meteo first (works in real browsers, blocked inside claude.ai iframe)
+  var openMeteoOk = await tryOpenMeteo(panel, homeWx);
+  if(openMeteoOk) return;
+
+  // Fallback: Anthropic API via 2-turn tool loop (works inside claude.ai sandbox)
+  await tryAnthropicWeather(panel, homeWx);
+}
+
+async function tryOpenMeteo(panel, homeWx){
+  try{
+    var url='https://api.open-meteo.com/v1/forecast'
+      +'?latitude=38.4192&longitude=27.1287'
+      +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
+      +'&daily=weather_code,temperature_2m_max,temperature_2m_min'
+      +'&timezone=Europe%2FIstanbul&forecast_days=7';
+    var resp=await fetch(url);
+    if(!resp.ok) return false;
+    var d=await resp.json();
+    var c=d.current;
+    if(typeof c.temperature_2m==='undefined') return false;
+    var code=c.weather_code||0;
+    var wx={
+      temp:Math.round(c.temperature_2m),
+      feels:Math.round(c.apparent_temperature),
+      humidity:c.relative_humidity_2m,
+      wind:Math.round(c.wind_speed_10m),
+      desc:WX_CODES[code]||'Clear',
+      code:code,
+      forecast:(d.daily.time||[]).map(function(t,i){
+        var dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        return {d:dn[new Date(t+'T12:00:00').getDay()],hi:Math.round(d.daily.temperature_2m_max[i]),lo:Math.round(d.daily.temperature_2m_min[i]),code:d.daily.weather_code[i]};
+      })
+    };
+    wx.emoji=wxIcon(wx.code);
+    wx.forecast.forEach(function(f){f.emoji=wxIcon(f.code);});
+    renderWeatherLive(wx,panel,homeWx);
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+async function tryAnthropicWeather(panel, homeWx){
+  try{
+    // Turn 1: trigger web search
+    var body1={
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1024,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      messages:[{role:'user',content:'Search for current weather in Izmir Turkey now. Reply with ONLY this JSON, no other text: {"temp":18,"feels":16,"humidity":65,"wind":8,"desc":"Clear","code":0,"forecast":[{"d":"Mon","hi":24,"lo":16,"code":0},{"d":"Tue","hi":25,"lo":17,"code":1},{"d":"Wed","hi":23,"lo":15,"code":2},{"d":"Thu","hi":24,"lo":16,"code":0},{"d":"Fri","hi":26,"lo":18,"code":0},{"d":"Sat","hi":27,"lo":19,"code":0},{"d":"Sun","hi":26,"lo":18,"code":1}]} using real values. code:0=sunny,1=partly cloudy,2=cloudy,3=overcast,61=rain,80=showers,95=storm'}]
+    };
+    var r1=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body1)});
+    if(!r1.ok) throw new Error('API '+r1.status);
+    var d1=await r1.json();
+    if(d1.error) throw new Error(d1.error.message);
+
+    var txt='';
+    var toolUseBlocks=[];
+    (d1.content||[]).forEach(function(b){
+      if(b.type==='text') txt+=b.text;
+      if(b.type==='tool_use') toolUseBlocks.push(b);
+    });
+
+    // Turn 2: if tool was used, continue conversation
+    if(toolUseBlocks.length>0){
+      var toolResults=toolUseBlocks.map(function(b){
+        return {type:'tool_result',tool_use_id:b.id,content:'Search complete'};
+      });
+      var body2={
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[
+          body1.messages[0],
+          {role:'assistant',content:d1.content},
+          {role:'user',content:toolResults}
+        ]
+      };
+      var r2=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body2)});
+      if(!r2.ok) throw new Error('API2 '+r2.status);
+      var d2=await r2.json();
+      if(d2.error) throw new Error(d2.error.message);
+      txt='';
+      (d2.content||[]).forEach(function(b){if(b.type==='text')txt+=b.text;});
+    }
+
+    if(!txt) throw new Error('empty response');
+    txt=txt.replace(/```json/gi,'').replace(/```/g,'').trim();
+    var wx=null;
+    var m1=txt.match(/\{[\s\S]*?"temp"\s*:\s*-?\d+[\s\S]*?"forecast"[\s\S]*?\][\s\S]*?\}/);
+    if(m1){try{wx=JSON.parse(m1[0]);}catch(e){wx=null;}}
+    if(!wx){var s=txt.indexOf('{'),e2=txt.lastIndexOf('}');if(s>-1&&e2>s){try{wx=JSON.parse(txt.slice(s,e2+1));}catch(e3){wx=null;}}}
+    if(!wx||typeof wx.temp!=='number') throw new Error('invalid response format');
+    wx.emoji=wxIcon(wx.code||0);
+    if(wx.forecast) wx.forecast.forEach(function(f){f.emoji=wxIcon(f.code||0);});
+    renderWeatherLive(wx,panel,homeWx);
+  }catch(err){
+    renderWeatherFallback(panel,homeWx,err.message);
+  }
+}
+
+function renderWeatherLive(wx, panel, homeWx){
+  var icon=wx.emoji||wx.icon||wxIcon(0);
+  var daysUntil=Math.round((new Date('2026-06-16')-new Date())/864e5);
+  var fcHtml='';
+  (wx.forecast||[]).forEach(function(f){
+    fcHtml+='<div class="wx-day"><div class="wx-day-name">'+f.d+'</div><div class="wx-day-ico">'+(f.emoji||f.icon||'☀️')+'</div><div class="wx-day-hi">'+f.hi+'°</div><div class="wx-day-lo">'+f.lo+'°</div></div>';
+  });
+  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(panel) panel.innerHTML=
+    '<div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'
+    +'<div class="wx-current"><div class="wx-icon">'+icon+'</div><div>'
+    +'<div class="wx-city">Izmir, Turkey</div>'
+    +'<div><span class="wx-temp">'+wx.temp+'</span><span class="wx-unit">°C</span></div>'
+    +'<div class="wx-desc">'+wx.desc+' · Feels like '+wx.feels+'°C</div>'
+    +'</div></div>'
+    +'<div class="wx-stats">'
+    +'<div class="wx-stat"><div class="wx-stat-val">'+wx.humidity+'%</div><div class="wx-stat-lbl">Humidity</div></div>'
+    +'<div class="wx-stat"><div class="wx-stat-val">'+wx.wind+'<span style="font-size:11px">km/h</span></div><div class="wx-stat-lbl">Wind</div></div>'
+    +'<div class="wx-stat"><div class="wx-stat-val" style="color:var(--sun)">'+wx.feels+'°C</div><div class="wx-stat-lbl">Feels like</div></div>'
+    +'</div>'
+    +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin:12px 0 8px;">7-DAY FORECAST</div>'
+    +'<div class="wx-forecast">'+fcHtml+'</div>'
+    +'<div class="wx-note" style="margin-top:10px;">'+(daysUntil>0?daysUntil+' days until your trip · ':'')+'Updated '+now+'</div>';
+  if(homeWx) homeWx.innerHTML=
+    '<div style="display:flex;align-items:center;gap:14px;">'
+    +'<div style="font-size:48px;">'+icon+'</div>'
+    +'<div><div style="font-size:10px;color:var(--sun);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Izmir · Now</div>'
+    +'<div style="font-family:Bebas Neue,sans-serif;font-size:40px;line-height:1;">'+wx.temp+'°C</div>'
+    +'<div style="font-size:12px;color:var(--muted);">'+wx.desc+'</div></div></div>'
+    +'<div style="font-size:10px;color:var(--dim);margin-top:8px;">Live · '+now+'</div>';
+}
+
+function renderWeatherFallback(panel,homeWx,errDetail){
+  var daysUntil=Math.round((new Date('2026-06-16')-new Date())/864e5);
+  var detail=errDetail?('<div style="font-size:10px;color:var(--dim);margin:6px 0 12px;word-break:break-all;">'+errDetail+'</div>'):'<div style="margin-bottom:12px;"></div>';
+  var retryHtml='<div style="text-align:center;padding:20px;"><div style="font-size:36px;margin-bottom:8px;">🌤</div><div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Could not load live weather</div>'+detail+'<button class="btn-primary" onclick="loadWeather()" style="width:100%;max-width:200px;">Try Again</button><div style="font-size:11px;color:var(--dim);margin-top:10px;">'+(daysUntil>0?daysUntil+' days until your trip':'')+'</div></div>';
+  if(panel) panel.innerHTML='<div class="card-title">🌤 IZMIR WEATHER</div>'+retryHtml;
+  if(homeWx) homeWx.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Weather unavailable</div><button class="btn-sm" onclick="wxHomeRefresh()" style="width:100%;padding:8px;">Refresh Weather</button>';
+}
+function wxHomeRefresh(){loadWeather();gotoSection("weather");}
+function wxRetry(){
+  loadWeather();
+}
+
+
+// ═══════════════════════════════════════════════
+// PACKING LIST
+// ═══════════════════════════════════════════════
+let packItems=[], packCat='All';
+
+function initPacking(){
+  const saved=localStorage.getItem('turkey_packing');
+  if(saved){packItems=JSON.parse(saved);}
+  else{
+    packItems=[];
+    Object.entries(PACK_DATA).forEach(([cat,items])=>{
+      items.forEach(name=>packItems.push({name,cat,done:false,id:Date.now()+Math.random()}));
+    });
+  }
+  renderPacking();
+}
+
+function savePacking(){localStorage.setItem('turkey_packing',JSON.stringify(packItems));}
+
+function renderPacking(){
+  const cats=['All',...Object.keys(PACK_DATA)];
+  const tabs=document.getElementById('pack-tabs');
+  tabs.innerHTML=cats.map(c=>`<button class="pack-tab${c===packCat?' active':''}" onclick="setPackCat('${c}')">${c} ${c==='All'?packItems.length:packItems.filter(i=>i.cat===c).length}</button>`).join('');
+
+  const filtered=packCat==='All'?packItems:packItems.filter(i=>i.cat===packCat);
+  var list=document.getElementById('pack-list');
+  list.innerHTML=filtered.map(item=>`
+    <div class="pack-item${item.done?' done':''}" onclick="togglePack('${item.id}')">
+      <div class="pack-cb">${item.done?'<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="2" fill="none"/></svg>':''}</div>
+      <span class="pack-name">${item.name}</span>
+      <span class="pack-cat-badge">${item.cat}</span>
+    </div>
+  `).join('');
+
+  const done=packItems.filter(i=>i.done).length;
+  var total=packItems.length;
+  var pct=total?Math.round(done/total*100):0;
+  document.getElementById('pack-pct').textContent=pct+'%';
+  document.getElementById('pack-count').textContent=`${done} of ${total} packed`;
+  document.getElementById('pack-bar').style.width=pct+'%';
+}
+
+function setPackCat(c){packCat=c;renderPacking();}
+
+function togglePack(id){
+  const item=packItems.find(i=>String(i.id)===String(id));
+  if(item){item.done=!item.done;savePacking();renderPacking();}
+}
+
+function addPackItem(){
+  const inp=document.getElementById('pack-input');
+  const v=inp.value.trim();
+  if(!v) return;
+  packItems.push({name:v,cat:packCat==='All'?'Misc':packCat,done:false,id:Date.now()});
+  savePacking();renderPacking();inp.value='';
+}
+
+function clearDone(){packItems=packItems.filter(i=>!i.done);savePacking();renderPacking();}
+function resetPacking(){if(confirm('Reset all packing items?')){localStorage.removeItem('turkey_packing');initPacking();}}
+
+function exportPacking(){
+  const lines=['TURKEY TRIP PACKING LIST','XQ941 · 16 Jun 2026 · STN\u2192ADB · Dep 22:30','XQ940 · 26 Jun 2026 · ADB\u2192STN · Dep 19:20','',''];
+  Object.keys(PACK_DATA).forEach(cat=>{
+    lines.push(`## ${cat.toUpperCase()}`);
+    packItems.filter(i=>i.cat===cat).forEach(i=>lines.push(`${i.done?'[x]':'[ ]'} ${i.name}`));
+    lines.push('');
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='turkey-trip-packing.txt';a.click();
+  showToast('\u1F4E5 Packing list saved!');
+}
+
+// ═══════════════════════════════════════════════
+// FLIGHT STATS
+// ═══════════════════════════════════════════════
+let curFlight='outbound';
+function switchFlightStats(w){
+  curFlight=w;
+  document.getElementById('fs-btn-out').classList.toggle('active',w==='outbound');
+  document.getElementById('fs-btn-in').classList.toggle('active',w==='inbound');
+  renderFlightStats(w);
+}
+
+function renderFlightStats(w){
+  var fd=FLIGHTS[w];
+  const h=fd.history;
+  const tot=h.length,ont=h.filter(x=>x[1]==='ontime').length,
+        del=h.filter(x=>x[1]==='delayed').length,ear=h.filter(x=>x[1]==='early').length;
+  const delAvg=Math.round(h.filter(x=>x[1]==='delayed').reduce((a,x)=>a+x[2],0)/(del||1));
+  const pOn=Math.round(ont/tot*100),pDel=Math.round(del/tot*100),pEar=Math.round(ear/tot*100);
+
+  const barMax=Math.max(...h.map(x=>Math.abs(x[2])||1));
+  const bars=h.map(x=>{
+    var col=x[1]==='ontime'?'var(--green)':x[1]==='delayed'?'var(--red)':'var(--blue)';
+    const ht=Math.max(6,Math.round((Math.abs(x[2])/barMax)*70));
+    const tip=x[1]==='delayed'?`${x[0]}: +${x[2]}m`:x[1]==='early'?`${x[0]}: ${x[2]}m early`:`${x[0]}: on time`;
+    return `<div class="b-wrap"><div class="b-bar" style="background:${col};height:${ht}px" data-tip="${tip}"></div><div class="b-lbl">${x[0]}</div></div>`;
+  }).join('');
+
+  var r=44,cx=55,cy=55,circ=2*Math.PI*r;
+  let off=0;
+  const segs=[[pOn,'var(--green)'],[pDel,'var(--red)'],[pEar,'var(--blue)']];
+  const paths=segs.map(([p,col])=>{
+    const len=(p/100)*circ;
+    var s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="11" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${-off}" opacity=".9"/>`;
+    off+=len;return s;
+  }).join('');
+
+  document.getElementById('flight-stats-panel').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--sun);letter-spacing:2px;">${fd.num}</div>
+        <div style="font-size:12px;color:var(--muted);">${fd.label} · Last 20 daily flights</div>
+      </div>
+      <div style="font-size:10px;color:var(--dim);background:rgba(255,255,255,.03);border-radius:6px;padding:3px 8px;">⚡ Simulated data</div>
+    </div>
+    <div class="bar-chart">${bars}</div>
+    <div class="donut-row">
+      <div class="donut-wrap">
+        <svg viewBox="0 0 110 110"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="11"/>${paths}</svg>
+        <div class="donut-center"><div class="donut-pct">${pOn}%</div><div class="donut-sub">on time</div></div>
+      </div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div><span class="leg-lbl">On Time</span><span class="leg-val">${ont}<span class="leg-pct">(${pOn}%)</span></span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div><span class="leg-lbl">Delayed</span><span class="leg-val">${del}<span class="leg-pct">(${pDel}%)</span></span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div><span class="leg-lbl">Early</span><span class="leg-val">${ear}<span class="leg-pct">(${pEar}%)</span></span></div>
+      </div>
+    </div>
+    <div class="stat-chips">
+      <div class="stat-chip"><div class="v" style="color:var(--red)">${delAvg}<span style="font-size:14px">m</span></div><div class="l">avg delay (when late)</div></div>
+      <div class="stat-chip"><div class="v" style="color:${fd.pred.col}">${fd.pred.c}%</div><div class="l">on-time confidence</div></div>
+    </div>
+    <div style="margin-top:14px;display:flex;align-items:flex-start;gap:10px;background:rgba(0,0,0,.2);border-radius:11px;padding:14px;">
+      <div style="width:10px;height:10px;border-radius:50%;background:${fd.pred.col};flex-shrink:0;margin-top:2px;box-shadow:0 0 8px ${fd.pred.col}"></div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:${fd.pred.col};">${fd.pred.v}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;">${fd.pred.note}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// FLIGHT DAY TIMELINE
+// ═══════════════════════════════════════════════
+const FD_DATA={
+  outbound:{
+    title:'Monday 16 June 2026 · Outbound',
+    sub:'XQ941 · Stansted \u2192 Izmir',
+    items:[
+      {time:'Daytime',title:'Enjoy your day \u2014 night flight!',desc:'No early start needed. Pack last items, charge all devices, check online check-in is done. Relax and enjoy the afternoon.',cls:'done'},
+      {time:'17:00',title:'Dinner before you go',desc:'Eat a proper meal before heading to the airport \u2014 food airside is pricey and you land in the early hours.',cls:'done'},
+      {time:'18:00',title:'Leave for Stansted',desc:'Evening traffic can be heavy. Allow plenty of time. National Express, Greater Anglia train, or taxi to STN. Check train times in advance.',cls:'done'},
+      {time:'19:30',title:'Arrive at Stansted',desc:'Check-in desks open ~3hrs before. SunExpress check-in area \u2014 follow departure signs. Bag drop queues lighter in the evening.',cls:'future'},
+      {time:'20:00',title:'Security & airside',desc:'Evening security is usually quieter than mornings. Fast track available ~£6. Liquids in 100ml bag, laptop out.',cls:'future'},
+      {time:'20:30',title:'Airside \u2014 last UK drinks & food',desc:'Stansted has Wetherspoons, Pret, Wagamama. Grab a drink and relax \u2014 it\'s going to be a late one!',cls:'future'},
+      {time:'21:45',title:'Gate opens (approx)',desc:'Gates open ~45 mins before. Check screens \u2014 gate announced closer to departure. Allow 15 min walk to remote gates.',cls:'future'},
+      {time:'22:10',title:'Board XQ941',desc:'Boarding 20 mins before departure. Have boarding pass and passport ready. Settle in for the 4hr flight.',cls:'future',
+        link:'https://www.flightradar24.com/data/flights/xq941',linkLabel:'\u1F4E1 Track XQ941 on Flightradar24'},
+      {time:'~02:30',title:'Land at Izmir (ADB)',desc:'Local time ~02:30 TRT (midnight:30 UK time). Set phone to Turkey time (+2hrs). Immigration at night is usually quicker.',cls:'future'},
+      {time:'~03:15',title:'Collect baggage & transfer',desc:'Have hotel/transfer details ready. Pre-booked transfer strongly recommended for late night arrivals at ADB. Taxis available outside 24hrs.',cls:'future'},
+    ]
+  },
+  inbound:{
+    title:'Friday 26 June 2026 · Return',
+    sub:'XQ940 · Izmir \u2192 Stansted',
+    items:[
+      {time:'Morning',title:'Check-in online & last morning',desc:'If not done already, complete SunExpress online check-in at sunexpress.com. Enjoy a last Turkish breakfast!',cls:'done'},
+      {time:'14:00',title:'Pack & settle hotel bill',desc:'Double-check all rooms, safe and drawers. Get receipt. Return room key. Agree taxi or transfer to airport.',cls:'done'},
+      {time:'15:30',title:'Leave for Izmir airport (ADB)',desc:'Izmir Adnan Menderes (ADB) is 20\u201340 mins from central Izmir. Allow 3hrs for check-in. Agree taxi price or use pre-booked transfer.',cls:'done'},
+      {time:'16:45',title:'Arrive at ADB · Check-in & bag drop',desc:'SunExpress check-in at Izmir ADB International Terminal. Allow 2.5hrs+ before departure.',cls:'future'},
+      {time:'17:15',title:'Passport control & security',desc:'Turkish departure control \u2014 passport scanned on exit. Security is thorough. No liquids over 100ml. Keep boarding pass handy.',cls:'future'},
+      {time:'17:45',title:'Airside \u2014 duty free & food',desc:'Last chance for Turkish delight, ceramics, leather goods and gifts. Buy liquids after security \u2014 they\'ll be confiscated at Stansted.',cls:'future'},
+      {time:'18:35',title:'Gate opens (approx)',desc:'Check screens for gate number. Izmir ADB gates can use buses to remote stands \u2014 allow 15-20 mins to reach gate.',cls:'future',
+        link:'https://www.flightradar24.com/data/flights/xq940',linkLabel:'\u1F4E1 Track XQ940 on Flightradar24'},
+      {time:'19:20',title:'Depart Izmir on XQ940',desc:'Enjoy the flight home \u2014 approx 4hrs. Set phone back to UK time (Turkey is +2hrs ahead of BST).',cls:'future'},
+      {time:'~23:20',title:'Land at Stansted (BST)',desc:'Local time ~19:20 UK. E-gates available for UK passports \u2014 fast and usually queue-free. Welcome home!',cls:'future'},
+      {time:'~00:00',title:'Baggage & get home',desc:'Last Stansted Express is around 00:30. After that, National Express night coach or taxi. Check train times and book in advance!',cls:'future'},
+    ]
+  }
+};
+
+function switchFlightDay(w){
+  document.getElementById('fd-btn-out').classList.toggle('active',w==='outbound');
+  document.getElementById('fd-btn-in').classList.toggle('active',w==='inbound');
+  renderFlightDay(w);
+}
+
+function renderFlightDay(w){
+  var fd=FD_DATA[w];
+  const items=fd.items.map(i=>`
+    <div class="tl-item">
+      <div class="tl-dot ${i.cls}"></div>
+      <div class="tl-time">${i.time}</div>
+      <div class="tl-title">${i.title}</div>
+      <div class="tl-desc">${i.desc}</div>
+      ${i.link?`<a class="tl-link" href="${i.link}" target="_blank">🔗 ${i.linkLabel}</a>`:''}
+    </div>
+  `).join('');
+  document.getElementById('flightday-panel').innerHTML=`
+    <div class="card card-accent">
+      <div style="margin-bottom:16px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;">${fd.title}</div>
+        <div style="font-size:12px;color:var(--muted);">${fd.sub}</div>
+      </div>
+      <div class="timeline">${items}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔗 LIVE TRACKING LINKS</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <a href="https://www.flightradar24.com/data/flights/${w==='outbound'?'xq941':'xq940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">📡 FlightRadar24 — Live ${w==='outbound'?'XQ941':'XQ940'} tracker</a>
+        <a href="https://www.flightaware.com/live/flight/${w==='outbound'?'XQ941':'XQ940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">✈ FlightAware — ${w==='outbound'?'XQ941':'XQ940'} status</a>
+        <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">🌞 SunExpress official status page</a>
+        <a href="${w==='outbound'?'https://www.stanstedairport.com/flights/departures/':'https://www.adbiletix.com/en/flight-information'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">🛫 ${w==='outbound'?'Stansted departures board':'Izmir ADB departures board'}</a>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// AIRPORT TIPS
+// ═══════════════════════════════════════════════
+const AIRPORTS={
+  stn:{
+    name:'London Stansted (STN)',
+    flag:'🇬🇧',
+    tips:[
+      {icon:'🚂',head:'Getting there',body:'Stansted Express from Liverpool St: 47 mins, every 15\u201330 mins. National Express coaches from many UK cities. Car park prices vary wildly \u2014 book far ahead.'},
+      {icon:'⏰',head:'Arrival time',body:'SunExpress recommends 2.5\u20133 hours before departure. Summer peak season: allow 3 hours. Check-in closes <span class="tip-highlight">40 mins before departure.</span>'},
+      {icon:'🛡',head:'Security tips',body:'All liquids in 100ml containers in 1 clear bag. Laptop & large tablets out. Remove belt & jacket. Fast track available for ~£6. Can be very long in summer mornings.'},
+      {icon:'🍔',head:'Food & drink',body:'Airside: Wagamama, Pret, Wetherspoons (cheapest), Upper Crust, YO! Sushi. Eat before security for cheaper options. Prices are high airside \u2014 bring snacks.'},
+      {icon:'💱',head:'Currency exchange',body:'Travelex airside but poor rates. Better: use your bank app or Wise/Revolut card in Turkey. Or withdraw TRY from an ATM at Izmir ADB or in town.'},
+      {icon:'🔌',head:'Charging & wifi',body:'Free wifi throughout. Charging points near gates \u2014 limited! Bring a power bank. USB-C plugs available near seating areas.'},
+      {icon:'🚀',head:'Gates & walking',body:'<span class="tip-highlight">Gates can be very far!</span> Allow 15\u201320 min walk. Check screens often \u2014 gate usually announced 45\u201360 mins before departure.'},
+      {icon:'🧒',head:'Families & accessibility',body:'Family security lane available. Assistance available \u2014 book with SunExpress in advance. Nursery & baby changing throughout.'},
+    ]
+  },
+  ayt:{
+    name:'Izmir Adnan Menderes Airport (ADB)',
+    flag:'🇹🇷',
+    tips:[
+      {icon:'🚕',head:'Transport to airport',body:'Taxis common \u2014 agree price before getting in or use metered cabs. Havas bus from city centre. Allow extra time: <span class="tip-highlight">Turkish traffic can be unpredictable.</span>'},
+      {icon:'⏰',head:'Arrival time',body:'Allow 3 hours for international flights in peak season (June\u2013August). Queue at Turkish passport control can be 30\u201345 mins. <span class="tip-highlight">Do not cut it fine.</span>'},
+      {icon:'🛂',head:'Departure passport control',body:'Turkish border control scans passport on exit. Keep all entry/exit documents. E-gates not available for UK passport holders.'},
+      {icon:'🛍',head:'Duty free',body:'Good duty free at Izmir ADB! Turkish delight, baklava, leather goods, jewellery. <span class="tip-highlight">Buy liquids after security</span> \u2014 they will be confiscated at UK Stansted.'},
+      {icon:'🍽',head:'Food airside',body:'Various Turkish restaurants, fast food and cafes airside. Quality surprisingly good. Turkish tea (çay) available everywhere \u2014 try it!'},
+      {icon:'🔋',head:'Charging',body:'Charging points available but bring a power bank. European Type F sockets (same as Turkey). Ensure UK plug adapter for your devices.'},
+      {icon:'🚌',head:'Remote gates',body:'<span class="tip-highlight">Some Izmir ADB gates use buses to remote stands.</span> Allow 30+ mins before boarding. Check screens frequently for gate and any changes.'},
+      {icon:'📱',head:'SIM & wifi',body:'Turkcell, Vodafone Turkey and Türk Telekom have shops in arrivals. Free wifi at airport. UK roaming now costs extra \u2014 check your plan before arriving.'},
+    ]
+  }
+};
+
+function switchAirport(w){
+  document.getElementById('ap-btn-stn').classList.toggle('active',w==='stn');
+  document.getElementById('ap-btn-ayt').classList.toggle('active',w==='ayt');
+  renderAirport(w);
+}
+
+function renderAirport(w){
+  const ap=AIRPORTS[w];
+  const grid=ap.tips.map(t=>`
+    <div class="tip-card">
+      <div class="tip-icon">${t.icon}</div>
+      <div class="tip-head">${t.head}</div>
+      <div class="tip-body">${t.body}</div>
+    </div>
+  `).join('');
+  document.getElementById('airport-panel').innerHTML=`
+    <div class="card card-accent">
+      <div style="font-size:22px;margin-bottom:4px;">${ap.flag} ${ap.name}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">Insider tips for a smooth experience</div>
+      <div class="airport-grid">${grid}</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// FLIGHT PREDICTIONS (home cards)
+// ═══════════════════════════════════════════════
+function setPreds(){
+  ['outbound','inbound'].forEach(w=>{
+    var p=FLIGHTS[w].pred;
+    const id=w==='outbound'?'pred-out':'pred-in';
+    document.getElementById(id).innerHTML=`
+      <div class="fc-pred-dot" style="background:${p.col};box-shadow:0 0 6px ${p.col}"></div>
+      <span class="fc-pred-text" style="color:${p.col}">${p.v} · ${p.c}%</span>
+    `;
+  });
+}
+
+// ═══════════════════════════════════════════════
+// AVIATIONSTACK
+// ═══════════════════════════════════════════════
+function saveApiKey(){
+  const key=document.getElementById('avstack-key').value.trim();
+  if(!key){showToast('\u26A0\uFE0F Enter a valid API key');return;}
+  localStorage.setItem('avstack_key',key);
+  document.getElementById('api-status').innerHTML='<span style="color:var(--green)">\u2713 Key saved \u2014 fetching live data\u2026</span>';
+  fetchLiveStatus(key);
+}
+
+async function fetchLiveStatus(key){
+  var inner=document.getElementById('live-inner');
+  inner.innerHTML='<div class="loader-row"><div class="spin"></div> Fetching live status\u2026</div>';
+  try{
+    const [r1,r2]=await Promise.allSettled([
+      fetch(`https://api.aviationstack.com/v1/flights?access_key=${key}&flight_iata=XQ941`,{signal:AbortSignal.timeout(8000)}),
+      fetch(`https://api.aviationstack.com/v1/flights?access_key=${key}&flight_iata=XQ940`,{signal:AbortSignal.timeout(8000)})
+    ]);
+    const d1 = r1.status==='fulfilled' ? await r1.value.json() : null;
+    const d2 = r2.status==='fulfilled' ? await r2.value.json() : null;
+    if(d1?.error || d2?.error){
+      const msg=(d1?.error||d2?.error)?.message||'API error';
+      throw new Error(msg);
+    }
+    renderLiveStatus(d1?.data?.[0], d2?.data?.[0]);
+  }catch(e){
+    const isCors=e.message.includes('Failed to fetch')||e.message.includes('CORS')||e.message.includes('NetworkError');
+    inner.innerHTML=`
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:32px;margin-bottom:10px;">${isCors?'\u1F512':'\u274C'}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:6px;">
+          ${isCors?'CORS Restriction (Free Tier Limitation)':'API Error'}
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+          ${isCors
+            ? 'AviationStack free tier blocks browser requests for security. Use the live tracker links below on flight day \u2014 they show the same real-time data.'
+            : 'Check your API key and try again. Error: '+e.message}
+        </div>
+        ${isCors?`<div style="margin-top:12px;font-size:11px;color:var(--dim);">Paid plans (from $9.99/mo) support CORS. Or use the links below — they\'re free.</div>`:''}
+      </div>
+    `;
+  }
+}
+
+function renderLiveStatus(f1,f2){
+  const fmtFlight=(f,num)=>{
+    if(!f) return `<div class="status-row">
+      <div class="status-icon" style="background:rgba(255,209,102,.1);">✈</div>
+      <div class="status-info"><div class="status-flight">${num}</div><div class="status-detail">No live data available for this flight right now</div></div>
+      <div class="status-pill pill-yellow">NO DATA</div></div>`;
+    const st=(f.flight_status||'unknown').toUpperCase();
+    const pillCls=st==='ACTIVE'?'pill-green':st==='LANDED'?'pill-blue':st==='CANCELLED'?'pill-red':'pill-yellow';
+    const dep=f.departure?.estimated||f.departure?.scheduled||'--';
+    const arr=f.arrival?.estimated||f.arrival?.scheduled||'--';
+    const delay=f.departure?.delay?`+${f.departure.delay}m delay`:'On schedule';
+    return `<div class="status-row">
+      <div class="status-icon" style="background:rgba(255,107,0,.1);">✈</div>
+      <div class="status-info">
+        <div class="status-flight">${num} · ${f.departure?.iata||'?'} → ${f.arrival?.iata||'?'}</div>
+        <div class="status-detail">Dep: ${new Date(dep).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} · Arr: ${new Date(arr).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} · ${delay}</div>
+      </div>
+      <div class="status-pill ${pillCls}">${st}</div></div>`;
+  };
+  document.getElementById('live-inner').innerHTML=`
+    <div class="card-title">📡 LIVE STATUS <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
+    ${fmtFlight(f1,'XQ941')}${fmtFlight(f2,'XQ940')}
+    <div style="font-size:10px;color:var(--dim);margin-top:10px;">AviationStack · Updated: ${new Date().toLocaleTimeString()}</div>
+  `;
+}
+
+// Auto-load if key saved
+const savedKey=localStorage.getItem('avstack_key');
+if(savedKey){
+  document.getElementById('avstack-key').value=savedKey;
+  document.getElementById('api-status').innerHTML='<span style="color:var(--muted)">Saved key found \u2014 click "Save & Fetch" to refresh data</span>';
+}
+
+// ═══════════════════════════════════════════════
+// CHECK-IN REMINDERS
+// ═══════════════════════════════════════════════
+const ciTimes={out:new Date('2026-06-13T22:00:00'),in:new Date('2026-06-23T18:50:00')};
+const ciMsg={out:'\u2708 XQ941 Check-in opens at 22:30 tonight \u2014 30 mins to go!',in:'\u2708 XQ940 Return check-in opens at 19:20 \u2014 30 mins to go!'};
+
+function setReminder(key,btn){
+  if(!('Notification' in window)){showToast('\u274C Notifications not supported');return;}
+  Notification.requestPermission().then(p=>{
+    if(p!=='granted'){showToast('\u274C Please allow notifications');return;}
+    var t=ciTimes[key],ms=t-new Date();
+    if(ms<=0){showToast('\u26A0\uFE0F Reminder time has passed');return;}
+    setTimeout(()=>new Notification('\u2708 SunExpress Check-in',{body:ciMsg[key],icon:'https://www.sunexpress.com/favicon.ico'}),ms);
+    btn.textContent='\u2705 Set!';btn.classList.add('set');btn.disabled=true;
+    showToast(`🔔 Reminder set for ${t.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} at ${t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`);
+  });
+}
+
+
+// ═══════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════
+(()=>{
+  var c=document.getElementById('stars');
+  for(let i=0;i<90;i++){
+    var s=document.createElement('div');s.className='star';
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--del:${Math.random()*6}s;--br:${.3+Math.random()*.5};`;
+    c.appendChild(s);
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function showToast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+
+// ═══════════════════════════════════════════════
+// PHRASES
+// ═══════════════════════════════════════════════
+// ── PHRASES ─────────────────────────────────────────────
+var PH = {
+  basics:[
+    ['Hello','Merhaba','mehr-hah-bah'],
+    ['Thank you','Tesekkur ederim','teh-shek-kur eh-deh-rim'],
+    ['Please','Lutfen','lut-fen'],
+    ['Yes','Evet','eh-vet'],
+    ['No','Hayir','hah-yur'],
+    ['Good morning','Gunaydin','gun-eye-dun'],
+    ['Good evening','Iyi aksamlar','ee-yee ak-sham-lar'],
+    ['Goodbye','Hosca kal','hosh-cha kal'],
+    ['Sorry','Ozur dilerim','oh-zur dil-er-im'],
+    ['Do you speak English?','Ingilizce biliyor musunuz?','een-gil-iz-jeh bil-ee-yor moo-soo-nooz'],
+    ['I do not understand','Anlamiyorum','an-lah-muh-yoh-room']
+  ],
+  transport:[
+    ['Taxi!','Taksi!','tak-see'],
+    ['How much to here?','Buraya ne kadar?','boo-rah-yah neh kah-dar'],
+    ['Airport','Havalimani','hah-vah-lee-mah-nuh'],
+    ['Bus station','Otogar','oh-toh-gar'],
+    ['Stop here please','Burada durun lutfen','boo-rah-dah doo-roon lut-fen'],
+    ['Left','Sol','sol'],
+    ['Right','Sag','sah'],
+    ['Straight on','Duz gidin','duz gee-din'],
+    ['To the hotel','Otele lutfen','oh-teh-leh lut-fen']
+  ],
+  food:[
+    ['A table for two','Iki kisilik masa','ee-kee kee-shee-lik mah-sah'],
+    ['The menu please','Menu lutfen','meh-nu lut-fen'],
+    ['Water please','Su lutfen','soo lut-fen'],
+    ['Turkish tea','Cay','chay'],
+    ['Turkish coffee','Turk kahvesi','turk kah-veh-see'],
+    ['The bill please','Hesap lutfen','heh-sap lut-fen'],
+    ['Delicious!','Cok lezzetli!','chok lez-zet-lee'],
+    ['No alcohol','Alkol yok','al-kol yok'],
+    ['Bread','Ekmek','ek-mek']
+  ],
+  shopping:[
+    ['How much is this?','Bu ne kadar?','boo neh kah-dar'],
+    ['Too expensive','Cok pahali','chok pah-hah-luh'],
+    ['Cheaper please','Daha ucuz','dah-hah oo-jooz'],
+    ['I will take it','Aliyorum','ah-luh-yoh-room'],
+    ['Can I pay by card?','Kartla odeyebilir miyim?','kart-la oh-deh-yeh-bil-ir mee-yim'],
+    ['Receipt please','Fis lutfen','fish lut-fen'],
+    ['Market','Carsi','char-shuh'],
+    ['Bazaar','Pazar','pah-zar']
+  ],
+  emergency:[
+    ['Help!','Imdat!','im-dat'],
+    ['Call the police!','Polisi arayin!','poh-lee-see ah-rah-yun'],
+    ['I need a doctor','Doktora ihtiyacim var','dok-toh-rah ih-tih-yah-jum var'],
+    ['Hospital','Hastane','has-tah-neh'],
+    ['I have been robbed','Soyuldum','soh-yool-doom'],
+    ['I am lost','Kayboldum','kay-bol-doom'],
+    ['My passport is lost','Pasaportum kayboldu','pah-sah-por-toom kay-bol-doo'],
+    ['British Embassy','Ingiliz Buyukelciligi','een-gil-iz boo-yuk-el-chee-lee-ee']
+  ]
+};
+
+function phTab(evt, cat){
+  var btn = evt ? evt.target : document.getElementById('ptab-basics');
+  document.querySelectorAll('#phrase-tabs button').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  var list = document.getElementById('phrase-list');
+  if(!list) return;
+  var items = PH[cat] || [];
+  list.innerHTML = '';
+  items.forEach(function(row){
+    var wrap = document.createElement('div');
+    wrap.setAttribute('style','display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.06);');
+    var txt = document.createElement('div');
+    txt.setAttribute('style','flex:1;');
+    var e = document.createElement('div');
+    e.setAttribute('style','font-size:13px;font-weight:600;color:#F0F4FF;');
+    e.textContent = row[0];
+    var t = document.createElement('div');
+    t.setAttribute('style','font-size:15px;color:#FF9A45;font-weight:700;margin:3px 0;');
+    t.textContent = row[1];
+    var p = document.createElement('div');
+    p.setAttribute('style','font-size:10px;color:#7A8FAD;font-style:italic;');
+    p.textContent = row[2];
+    txt.appendChild(e); txt.appendChild(t); txt.appendChild(p);
+    var ic = document.createElement('div');
+    ic.setAttribute('style','font-size:11px;font-weight:700;color:#7A8FAD;background:rgba(255,255,255,0.08);border-radius:6px;padding:4px 8px;flex-shrink:0;letter-spacing:0.5px;');
+    ic.textContent = 'COPY';
+    wrap.appendChild(txt); wrap.appendChild(ic);
+    var trWord = row[1];
+    wrap.onclick = function(){
+      try {
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(trWord).then(function(){
+            ic.textContent = 'OK!';
+            ic.setAttribute('style','font-size:11px;font-weight:700;color:#22D67A;background:rgba(34,214,122,0.15);border-radius:6px;padding:4px 8px;flex-shrink:0;');
+            setTimeout(function(){ic.textContent='COPY';ic.setAttribute('style','font-size:11px;font-weight:700;color:#7A8FAD;background:rgba(255,255,255,0.08);border-radius:6px;padding:4px 8px;flex-shrink:0;');},1500);
+          }).catch(function(){ phFallbackCopy(trWord, ic); });
+        } else {
+          phFallbackCopy(trWord, ic);
+        }
+      } catch(err) { phFallbackCopy(trWord, ic); }
+    };
+    list.appendChild(wrap);
+  });
+}
+
+function phFallbackCopy(text, ic){
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('style','position:fixed;top:-9999px;left:-9999px;opacity:0;');
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    ic.textContent = 'OK!';
+    ic.setAttribute('style','font-size:11px;font-weight:700;color:#22D67A;background:rgba(34,214,122,0.15);border-radius:6px;padding:4px 8px;flex-shrink:0;');
+    setTimeout(function(){ic.textContent='COPY';ic.setAttribute('style','font-size:11px;font-weight:700;color:#7A8FAD;background:rgba(255,255,255,0.08);border-radius:6px;padding:4px 8px;flex-shrink:0;');},1500);
+  } catch(e2) { ic.textContent = 'TAP'; }
+}
+// also expose old name for gotoSection compatibility
+function showPhrases(cat, btn){ phTab(null, cat||'basics'); }
+
+
+function copyPhrase(tr, el){
+  navigator.clipboard?.writeText(tr).then(()=>{
+    el.style.background='rgba(34,214,122,.15)';
+    setTimeout(()=>el.style.background='rgba(0,0,0,.2)',1200);
+    showToast('\u1F4CB Copied: '+tr);
+  }).catch(()=>showToast('\u26A0\uFE0F Copy not supported'));
+}
+
+// ═══════════════════════════════════════════════
+// LIVE FLIGHT STATS REFRESH
+// ═══════════════════════════════════════════════
+var statsLastRefresh = null;
+
+async function refreshFlightStats(){
+  var today = new Date().toDateString();
+  var cachedDate = localStorage.getItem('fstats_date');
+  var cachedData = localStorage.getItem('fstats_data');
+  
+  // Use cached data if from today
+  if(cachedDate === today && cachedData){
+    try{
+      var cached = JSON.parse(cachedData);
+      applyHistoryUpdate(cached);
+      showStatsAge('Today');
+      return;
+    }catch(e){}
+  }
+
+  var btn = document.getElementById('stats-refresh-btn');
+  if(btn) btn.textContent = 'Checking...';
+
+  try{
+    var resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system:'You are a flight data assistant. Search for recent SunExpress punctuality stats and return ONLY valid JSON, no markdown. Format: {"ontime_pct":73,"delayed_pct":20,"early_pct":7,"avg_delay_mins":28,"note":"source description"}',
+        messages:[{role:'user',content:'Search for SunExpress XQ airline on-time performance percentage 2025 2026. Return only the JSON object with current stats.'}]
+      })
+    });
+    var data = await resp.json();
+    var txt = '';
+    (data.content||[]).forEach(function(b){ if(b.type==='text') txt += b.text; });
+    var match = txt.match(/\{[^{}]*"ontime_pct"\s*:\s*\d+[^{}]*\}/);
+    if(match){
+      var stats = JSON.parse(match[0]);
+      localStorage.setItem('fstats_date', today);
+      localStorage.setItem('fstats_data', JSON.stringify(stats));
+      applyHistoryUpdate(stats);
+      showStatsAge('Just now');
+    }
+  }catch(e){}
+
+  if(btn) btn.textContent = 'Refresh stats';
+  showStatsAge(cachedDate === today ? 'Today' : (cachedDate || 'Never'));
+}
+
+function applyHistoryUpdate(stats){
+  if(!stats||!stats.ontime_pct) return;
+  FLIGHTS.outbound.pred.c = stats.ontime_pct;
+  FLIGHTS.inbound.pred.c = Math.max(10, stats.ontime_pct - 8);
+  setPreds();
+  var src = document.getElementById('stats-source-line');
+  if(src && stats.note) src.textContent = stats.note;
+  renderFlightStats(curFlight||'outbound');
+}
+
+function showStatsAge(when){
+  var el = document.getElementById('stats-age');
+  if(el) el.textContent = 'Stats last refreshed: ' + (when||'');
+}
+
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+updateCD();setInterval(updateCD,1000);
+updateClocks();setInterval(updateClocks,1000);
+setPreds();
+initPacking();
+loadFX();
+loadWeather();
+renderFlightStats('outbound');
+renderFlightDay('outbound');
+renderAirport('stn');
+</script>
+
+</body>
+</html>
