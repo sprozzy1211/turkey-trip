@@ -29,7 +29,7 @@ body::before{content:'';position:fixed;inset:0;background:
 
 /* ── NAV ── */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.92);backdrop-filter:blur(20px);
-border-bottom:1px solid rgba(255,255,255,.06);padding:0 20px;}
+border-bottom:1px solid rgba(255,255,255,.06);padding:env(safe-area-inset-top) 20px 0;}
 .nav-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:0;height:54px;overflow-x:auto;scrollbar-width:none;}
 .nav-inner::-webkit-scrollbar{display:none;}
 .nav-tab{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;gap:6px;
