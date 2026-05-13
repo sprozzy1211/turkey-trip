@@ -149,7 +149,7 @@ border-radius:5px;transition:width .4s ease;}
 .pack-pct{font-family:‘Bebas Neue’,sans-serif;font-size:22px;color:var(–sun);}
 .pack-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .pack-tab{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;
-background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:var(–muted);transition:all .2s;}
+background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:#fff;transition:all .2s;}
 .pack-tab.active{background:rgba(255,107,0,.15);border-color:rgba(255,107,0,.4);color:var(–sun2);}
 .pack-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;
 scrollbar-width:thin;scrollbar-color:var(–dim) transparent;}
@@ -280,17 +280,19 @@ border-radius:50%;animation:spin .8s linear infinite;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loader-row{display:flex;align-items:center;gap:10px;padding:30px;
 justify-content:center;color:var(–muted);font-size:13px;}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);
-background:var(–card2);border:1px solid rgba(34,214,122,.4);border-radius:12px;
-padding:12px 20px;font-size:13px;color:var(–green);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
-z-index:200;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5);}
-.toast.show{transform:translateX(-50%) translateY(0);}
 .disclaimer{margin-top:20px;font-size:10px;color:var(–dim);text-align:center;
 background:rgba(255,255,255,.02);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.04);}
 .stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;
 opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
 @keyframes twink{0%,100%{opacity:0;}50%{opacity:var(–br,.5);}}
+@keyframes fly-route{
+  0%     {left:0%;   transform:translateX(-50%) scaleX(1);}
+  49.99% {left:100%; transform:translateX(-50%) scaleX(1);}
+  50%    {left:100%; transform:translateX(-50%) scaleX(-1);}
+  100%   {left:0%;   transform:translateX(-50%) scaleX(-1);}
+}
+#route-plane{position:absolute;top:-8px;font-size:18px;animation:fly-route 10s linear infinite;}
 </style>
 
 </head>
@@ -298,23 +300,12 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
 
 <div class="stars-bg" id="stars"></div>
 
-<!-- PWA Banner -->
-
-<div class="pwa-banner hidden" id="pwa-banner">
-  <span style="font-size:28px">📱</span>
-  <div class="pwa-text">
-    <strong>Add to Home Screen</strong>
-    <span>Install this app for offline access to your trip</span>
-  </div>
-  <button class="btn-sm" id="pwa-install">Install</button>
-  <button class="pwa-close" onclick="document.getElementById('pwa-banner').classList.add('hidden')">✕</button>
-</div>
 
 <!-- NAV -->
 
 <nav>
   <div class="nav-inner">
-    <div class="nav-logo">✈ XQ</div>
+    <div class="nav-logo">✈</div>
     <div class="nav-tab active" onclick="gotoSection('home')">🏠 Home</div>
     <div class="nav-tab" onclick="gotoSection('flights')">📊 Flights</div>
     <div class="nav-tab" onclick="gotoSection('live')">📡 Live</div>
@@ -383,7 +374,7 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
       </div>
       <div style="flex:1;margin:0 12px;position:relative;">
         <div style="height:2px;background:linear-gradient(90deg,var(--sun),var(--blue));border-radius:1px;"></div>
-        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:18px;">✈️</div>
+        <div id="route-plane">✈️</div>
       </div>
       <div style="text-align:center;">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--blue);">ADB</div>
@@ -448,10 +439,10 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
     <div id="home-fx-inner"><div class="loader-row"><div class="spin"></div> Fetching rates…</div></div>
   </div>
 
-  <!-- Izmir weather snapshot -->
+  <!-- Özdere weather snapshot -->
 
   <div class="card" id="home-wx">
-    <div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
+    <div class="card-title">🌤 ÖZDERE WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>
     <div id="home-wx-inner"><div class="loader-row"><div class="spin"></div> Loading weather…</div></div>
   </div>
 
@@ -493,7 +484,7 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
   </div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;margin-bottom:4px;">
   <div id="stats-age" style="font-size:10px;color:var(--dim);"></div>
-  <button id="stats-refresh-btn" class="btn-sm" onclick="refreshFlightStats()" style="padding:5px 10px;font-size:11px;">🔄 Refresh stats</button>
+  <button id="stats-refresh-btn" class="btn-sm" onclick="refreshFlightStats()" style="padding:5px 10px;font-size:11px;color:#fff;">🔄 Refresh stats</button>
 </div>
 <div id="stats-source-line" style="font-size:10px;color:var(--dim);margin-bottom:8px;"></div>
 <div class="disclaimer">Stats based on SunExpress published ~73% punctuality. Click Refresh to check today's latest data via web search.</div>
@@ -549,16 +540,16 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
   <div class="card">
     <div class="card-title">🔗 EXTERNAL TRACKERS</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <a href="https://www.flightradar24.com/data/flights/xq941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+      <a href="https://www.flightradar24.com/data/flights/xq941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;color:#fff;">
         📡 FlightRadar24 — Track XQ941 live
       </a>
-      <a href="https://www.flightradar24.com/data/flights/xq940" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+      <a href="https://www.flightradar24.com/data/flights/xq940" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;color:#fff;">
         📡 FlightRadar24 — Track XQ940 live
       </a>
-      <a href="https://www.flightaware.com/live/flight/XQ941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+      <a href="https://www.flightaware.com/live/flight/XQ941" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;color:#fff;">
         ✈ FlightAware — XQ941 status
       </a>
-      <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;">
+      <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:10px 14px;color:#fff;">
         🌞 SunExpress official flight status
       </a>
     </div>
@@ -580,7 +571,7 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
 
 <div class="section" id="sec-weather">
   <div class="section-header">
-    <h2>🌤 İZMIR WEATHER</h2><div class="sec-line"></div>
+    <h2>🌤 ÖZDERE WEATHER</h2><div class="sec-line"></div>
     <span class="badge badge-live"><div class="live-dot"></div>OPEN-METEO</span>
   </div>
   <div class="card card-accent" id="weather-panel">
@@ -751,7 +742,6 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
 
 </div><!-- /container -->
 
-<div class="toast" id="toast">✅ Done!</div>
 
 <script>
 // ═══════════════════════════════════════════════
@@ -990,8 +980,8 @@ var WX_CODES={0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fogg
 async function loadWeather(){
   var panel=document.getElementById('weather-panel');
   var homeWx=document.getElementById('home-wx-inner');
-  var spinHtml='<div class="loader-row"><div class="spin"></div> Fetching live Izmir weather...</div>';
-  if(panel) panel.innerHTML='<div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'+spinHtml;
+  var spinHtml='<div class="loader-row"><div class="spin"></div> Fetching live Özdere weather...</div>';
+  if(panel) panel.innerHTML='<div class="card-title">🌤 ÖZDERE WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'+spinHtml;
   if(homeWx) homeWx.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;"><div class="spin"></div><div style="font-size:13px;color:var(--muted);">Loading...</div></div>';
 
   // Try Open-Meteo first (works in real browsers, blocked inside claude.ai iframe)
@@ -1005,7 +995,7 @@ async function loadWeather(){
 async function tryOpenMeteo(panel, homeWx){
   try{
     var url='https://api.open-meteo.com/v1/forecast'
-      +'?latitude=38.4192&longitude=27.1287'
+      +'?latitude=37.7714&longitude=27.1253'
       +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
       +'&daily=weather_code,temperature_2m_max,temperature_2m_min'
       +'&timezone=Europe%2FIstanbul&forecast_days=7';
@@ -1043,7 +1033,7 @@ async function tryAnthropicWeather(panel, homeWx){
       model:'claude-sonnet-4-20250514',
       max_tokens:1024,
       tools:[{type:'web_search_20250305',name:'web_search'}],
-      messages:[{role:'user',content:'Search for current weather in Izmir Turkey now. Reply with ONLY this JSON, no other text: {"temp":18,"feels":16,"humidity":65,"wind":8,"desc":"Clear","code":0,"forecast":[{"d":"Mon","hi":24,"lo":16,"code":0},{"d":"Tue","hi":25,"lo":17,"code":1},{"d":"Wed","hi":23,"lo":15,"code":2},{"d":"Thu","hi":24,"lo":16,"code":0},{"d":"Fri","hi":26,"lo":18,"code":0},{"d":"Sat","hi":27,"lo":19,"code":0},{"d":"Sun","hi":26,"lo":18,"code":1}]} using real values. code:0=sunny,1=partly cloudy,2=cloudy,3=overcast,61=rain,80=showers,95=storm'}]
+      messages:[{role:'user',content:'Search for current weather in Ozdere Turkey now. Reply with ONLY this JSON, no other text: {"temp":18,"feels":16,"humidity":65,"wind":8,"desc":"Clear","code":0,"forecast":[{"d":"Mon","hi":24,"lo":16,"code":0},{"d":"Tue","hi":25,"lo":17,"code":1},{"d":"Wed","hi":23,"lo":15,"code":2},{"d":"Thu","hi":24,"lo":16,"code":0},{"d":"Fri","hi":26,"lo":18,"code":0},{"d":"Sat","hi":27,"lo":19,"code":0},{"d":"Sun","hi":26,"lo":18,"code":1}]} using real values. code:0=sunny,1=partly cloudy,2=cloudy,3=overcast,61=rain,80=showers,95=storm'}]
     };
     var r1=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body1)});
     if(!r1.ok) throw new Error('API '+r1.status);
@@ -1104,9 +1094,9 @@ function renderWeatherLive(wx, panel, homeWx){
   });
   var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   if(panel) panel.innerHTML=
-    '<div class="card-title">🌤 IZMIR WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'
+    '<div class="card-title">🌤 ÖZDERE WEATHER <span class="badge badge-live"><div class="live-dot"></div>LIVE</span></div>'
     +'<div class="wx-current"><div class="wx-icon">'+icon+'</div><div>'
-    +'<div class="wx-city">Izmir, Turkey</div>'
+    +'<div class="wx-city">Özdere, Turkey</div>'
     +'<div><span class="wx-temp">'+wx.temp+'</span><span class="wx-unit">°C</span></div>'
     +'<div class="wx-desc">'+wx.desc+' · Feels like '+wx.feels+'°C</div>'
     +'</div></div>'
@@ -1121,7 +1111,7 @@ function renderWeatherLive(wx, panel, homeWx){
   if(homeWx) homeWx.innerHTML=
     '<div style="display:flex;align-items:center;gap:14px;">'
     +'<div style="font-size:48px;">'+icon+'</div>'
-    +'<div><div style="font-size:10px;color:var(--sun);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Izmir · Now</div>'
+    +'<div><div style="font-size:10px;color:var(--sun);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;">Özdere · Now</div>'
     +'<div style="font-family:Bebas Neue,sans-serif;font-size:40px;line-height:1;">'+wx.temp+'°C</div>'
     +'<div style="font-size:12px;color:var(--muted);">'+wx.desc+'</div></div></div>'
     +'<div style="font-size:10px;color:var(--dim);margin-top:8px;">Live · '+now+'</div>';
@@ -1131,7 +1121,7 @@ function renderWeatherFallback(panel,homeWx,errDetail){
   var daysUntil=Math.round((new Date('2026-06-16')-new Date())/864e5);
   var detail=errDetail?('<div style="font-size:10px;color:var(--dim);margin:6px 0 12px;word-break:break-all;">'+errDetail+'</div>'):'<div style="margin-bottom:12px;"></div>';
   var retryHtml='<div style="text-align:center;padding:20px;"><div style="font-size:36px;margin-bottom:8px;">🌤</div><div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Could not load live weather</div>'+detail+'<button class="btn-primary" onclick="loadWeather()" style="width:100%;max-width:200px;">Try Again</button><div style="font-size:11px;color:var(--dim);margin-top:10px;">'+(daysUntil>0?daysUntil+' days until your trip':'')+'</div></div>';
-  if(panel) panel.innerHTML='<div class="card-title">🌤 IZMIR WEATHER</div>'+retryHtml;
+  if(panel) panel.innerHTML='<div class="card-title">🌤 ÖZDERE WEATHER</div>'+retryHtml;
   if(homeWx) homeWx.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Weather unavailable</div><button class="btn-sm" onclick="wxHomeRefresh()" style="width:100%;padding:8px;">Refresh Weather</button>';
 }
 function wxHomeRefresh(){loadWeather();gotoSection("weather");}
@@ -1351,10 +1341,10 @@ function renderFlightDay(w){
     <div class="card">
       <div class="card-title">🔗 LIVE TRACKING LINKS</div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <a href="https://www.flightradar24.com/data/flights/${w==='outbound'?'xq941':'xq940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">📡 FlightRadar24 — Live ${w==='outbound'?'XQ941':'XQ940'} tracker</a>
-        <a href="https://www.flightaware.com/live/flight/${w==='outbound'?'XQ941':'XQ940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">✈ FlightAware — ${w==='outbound'?'XQ941':'XQ940'} status</a>
-        <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">🌞 SunExpress official status page</a>
-        <a href="${w==='outbound'?'https://www.stanstedairport.com/flights/departures/':'https://www.adbiletix.com/en/flight-information'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;">🛫 ${w==='outbound'?'Stansted departures board':'Izmir ADB departures board'}</a>
+        <a href="https://www.flightradar24.com/data/flights/${w==='outbound'?'xq941':'xq940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;color:#fff;">📡 FlightRadar24 — Live ${w==='outbound'?'XQ941':'XQ940'} tracker</a>
+        <a href="https://www.flightaware.com/live/flight/${w==='outbound'?'XQ941':'XQ940'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;color:#fff;">✈ FlightAware — ${w==='outbound'?'XQ941':'XQ940'} status</a>
+        <a href="https://www.sunexpress.com/en/flight-status/" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;color:#fff;">🌞 SunExpress official status page</a>
+        <a href="${w==='outbound'?'https://www.stanstedairport.com/flights/departures/':'https://www.adbiletix.com/en/flight-information'}" target="_blank" class="tl-link" style="font-size:13px;padding:11px 14px;color:#fff;">🛫 ${w==='outbound'?'Stansted departures board':'Izmir ADB departures board'}</a>
       </div>
     </div>
   `;
@@ -1544,10 +1534,7 @@ function setReminder(key,btn){
 // ═══════════════════════════════════════════════
 // TOAST
 // ═══════════════════════════════════════════════
-function showToast(msg){
-  var t=document.getElementById('toast');t.textContent=msg;
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
-}
+function showToast(msg){}
 
 
 // ═══════════════════════════════════════════════
