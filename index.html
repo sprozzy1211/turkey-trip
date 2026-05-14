@@ -612,6 +612,9 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
   <div class="card card-accent" id="fx-panel">
     <div class="loader-row"><div class="spin"></div> Fetching live rates…</div>
   </div>
+  <div style="display:flex;justify-content:flex-end;margin-top:8px;margin-bottom:4px;">
+    <button id="fx-refresh-btn" class="btn-sm" onclick="refreshFX()" style="padding:5px 10px;font-size:11px;color:#fff;">🔄 Refresh rates</button>
+  </div>
   <div class="card">
     <div class="card-title">💱 QUICK CONVERTER</div>
     <div style="margin-bottom:10px;">
@@ -986,11 +989,18 @@ async function loadFX(){
   }
 }
 
+async function refreshFX(){
+  var btn=document.getElementById('fx-refresh-btn');
+  if(btn){btn.textContent='Fetching...';btn.disabled=true;}
+  try{localStorage.removeItem('fx_cache');localStorage.removeItem('fx_cache_time');}catch(e){}
+  await loadFX();
+  if(btn){btn.textContent='🔄 Refresh rates';btn.disabled=false;}
+}
 
 function renderFX(d){
   var try_=fxRates.TRY?.toFixed(2)||'43.20';
   var eur=fxRates.EUR?.toFixed(4)||'1.1700';
-  const live=d&&d.live?'<span class="badge badge-live"><div class="live-dot"></div>LIVE</span>':'<span style="font-size:10px;color:var(--yellow)">\u26A0 Est. rates</span>';
+  const live=d&&d.live?'<span class="badge badge-live"><div class="live-dot"></div>LIVE</span>':'';
   document.getElementById('fx-panel').innerHTML=`
     <div class="card-title">💷 GBP EXCHANGE RATES ${live}</div>
     <div class="fx-row">
@@ -1005,7 +1015,7 @@ function renderFX(d){
       <div><div class="fx-pair"><span class="fx-flags">🇪🇺🇹🇷</span>EUR → TRY</div><div class="fx-sub">Euro → Turkish Lira</div></div>
       <div style="text-align:right"><div class="fx-rate" style="color:var(--purple)">₺${(fxRates.TRY/fxRates.EUR).toFixed(2)}</div><div class="fx-sub">per €1</div></div>
     </div>
-    <div style="font-size:10px;color:var(--dim);margin-top:10px;">${d&&d.live?'Live rates via web search · '+new Date().toLocaleTimeString():'Estimated rates · will refresh on next load'}</div>
+    <div style="font-size:10px;color:var(--dim);margin-top:10px;">${d&&d.live?'Live rates via web search · '+new Date().toLocaleTimeString():'Rates unavailable · tap Refresh rates to try again'}</div>
   `;
 }
 
@@ -1025,7 +1035,7 @@ function renderHomeFX(d){
         <div style="font-size:10px;color:var(--muted);">per £1</div>
       </div>
     </div>
-    <div style="font-size:10px;color:var(--dim);margin-top:8px;text-align:right;">${d&&d.live?'Live · '+new Date().toLocaleTimeString():'Est. rates'}</div>
+    <div style="font-size:10px;color:var(--dim);margin-top:8px;text-align:right;">${d&&d.live?'Live · '+new Date().toLocaleTimeString():''}</div>
   `;
 }
 
