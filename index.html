@@ -331,6 +331,64 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
 .dp-btn:active{background:rgba(123,47,255,.55);box-shadow:0 0 12px rgba(0,229,255,.4);}
 .dp-empty{background:transparent;border:none;}
 .snake-dpad-hidden .snake-dpad{visibility:hidden;}
+/* ── BATTLESHIPS ── */
+#sec-battleships{padding:20px 20px 80px;}
+.bs-wrap{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.bs-title{font-family:'Arial Black',sans-serif;font-size:clamp(22px,8vw,38px);
+  letter-spacing:4px;color:#fff;text-shadow:0 0 14px #7b2fff,0 0 28px #7b2fff;text-align:center;}
+.bs-subtitle{font-family:monospace;font-size:11px;color:rgba(0,229,255,.5);
+  text-align:center;letter-spacing:1px;line-height:1.6;}
+.bs-score-row{display:flex;justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:#00e5ff;text-shadow:0 0 6px #00e5ff;padding:0 2px;}
+.bs-grid-outer{display:grid;grid-template-columns:18px repeat(10,1fr);gap:2px;width:100%;}
+.bs-col-lbl{font-family:monospace;font-size:9px;color:rgba(0,229,255,.4);
+  text-align:center;line-height:18px;}
+.bs-row-lbl{font-family:monospace;font-size:9px;color:rgba(0,229,255,.4);
+  display:flex;align-items:center;justify-content:center;}
+.bs-cell{aspect-ratio:1;background:rgba(255,255,255,.03);
+  border:1px solid rgba(123,47,255,.12);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(9px,2.2vw,16px);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+.bs-cell.ship{background:rgba(123,47,255,.35);box-shadow:inset 0 0 4px rgba(123,47,255,.4);}
+.bs-cell.hit{background:rgba(255,77,77,.25);box-shadow:0 0 6px #ff4d4d;cursor:default;}
+.bs-cell.miss{background:rgba(0,229,255,.06);cursor:default;color:rgba(0,229,255,.45);font-size:clamp(7px,1.8vw,13px);}
+.bs-cell.sunk{background:rgba(255,77,77,.18);outline:1px solid rgba(255,77,77,.5);}
+.bs-cell.untapped:active{background:rgba(0,229,255,.2);}
+.bs-btn{width:100%;padding:12px 0;border-radius:10px;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  text-align:center;cursor:pointer;border:none;
+  -webkit-tap-highlight-color:transparent;}
+.bs-btn-share{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.4);
+  color:#00e5ff;text-shadow:0 0 6px #00e5ff;}
+.bs-btn-share:active{background:rgba(0,229,255,.25);}
+.bs-btn-new{background:rgba(123,47,255,.15);border:1px solid rgba(123,47,255,.5);color:#c084fc;}
+.bs-btn-new:active{background:rgba(123,47,255,.3);}
+.bs-fleet-list{font-family:monospace;font-size:11px;color:rgba(123,47,255,.8);line-height:2;
+  background:rgba(123,47,255,.08);border:1px solid rgba(123,47,255,.2);
+  border-radius:8px;padding:10px 14px;}
+.bs-result-box{background:rgba(34,214,122,.08);border:1px solid rgba(34,214,122,.3);
+  border-radius:12px;padding:20px;text-align:center;}
+.bs-result-big{font-family:'Arial Black',sans-serif;font-size:clamp(36px,12vw,60px);
+  color:#22D67A;text-shadow:0 0 14px #22D67A;}
+.bs-result-lbl{font-family:monospace;font-size:10px;color:rgba(34,214,122,.6);margin-top:4px;}
+.bs-vs-row{display:flex;gap:12px;align-items:center;justify-content:center;}
+.bs-vs-score{flex:1;text-align:center;}
+.bs-vs-name{font-family:monospace;font-size:10px;color:rgba(0,229,255,.5);margin-bottom:4px;}
+.bs-vs-num{font-family:'Arial Black',sans-serif;font-size:clamp(28px,8vw,40px);}
+.bs-vs-num.you{color:#22D67A;text-shadow:0 0 10px #22D67A;}
+.bs-vs-num.them{color:#c084fc;text-shadow:0 0 10px #7b2fff;}
+.bs-vs-sep{font-family:monospace;font-size:16px;color:rgba(255,255,255,.2);}
+.bs-winner{background:rgba(34,214,122,.15);border:1px solid rgba(34,214,122,.4);
+  border-radius:6px;padding:8px 12px;font-family:monospace;font-size:12px;
+  color:#22D67A;text-align:center;}
+.bs-sunk-flash{font-family:monospace;font-size:11px;color:#ff4d4d;
+  text-align:center;min-height:18px;text-shadow:0 0 6px #ff4d4d;}
+.bs-replay-section{background:rgba(123,47,255,.06);border:1px solid rgba(123,47,255,.2);
+  border-radius:10px;padding:12px;}
+.bs-replay-title{font-family:monospace;font-size:10px;color:rgba(255,77,77,.7);
+  letter-spacing:1px;margin-bottom:8px;text-align:center;}
 </style>
 
 </head>
@@ -355,6 +413,7 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
     <div class="nav-tab" onclick="gotoSection('phrases')">🗣 Phrases</div>
     <div class="nav-tab" onclick="gotoSection('emergency')">🚨 SOS</div>
     <div class="nav-tab" onclick="gotoSection('snake')">🐍 Snake</div>
+    <div class="nav-tab" onclick="gotoSection('battleships')">🎯 Battleships</div>
   </div>
 </nav>
 
@@ -859,6 +918,7 @@ function gotoSection(id){
   if(id==='flights'){ renderFlightStats('outbound'); refreshFlightStats(); }
   if(id==='phrases') phTab(null,'basics');
   if(id==='snake') initSnake();
+  if(id==='battleships') initBattleships();
 }
 
 // ═══════════════════════════════════════════════
@@ -2131,6 +2191,383 @@ function snHandleOverClick(e){
 }
 
 // ═══════════════════════════════════════════════
+// BATTLESHIPS GAME
+// ═══════════════════════════════════════════════
+var BS = {
+  wrap: null,
+  myBoard: null,
+  attackBoard: null,
+  attackedBoard: null,
+  shots: [],
+  opponentScore: null,
+  opponentAttacks: null,
+  resultUrl: null,
+  ships: [
+    {name:'Carrier',    len:5},
+    {name:'Battleship', len:4},
+    {name:'Cruiser',    len:3},
+    {name:'Destroyer',  len:2},
+    {name:'Submarine',  len:2}
+  ]
+};
+
+function bsParseHash(){
+  var hash = window.location.hash;
+  var params = {};
+  var qi = hash.indexOf('?');
+  if(qi===-1) return params;
+  hash.slice(qi+1).split('&').forEach(function(p){
+    var eq=p.indexOf('=');
+    if(eq>-1) params[p.slice(0,eq)]=p.slice(eq+1);
+  });
+  return params;
+}
+
+function bsEncode(cells){
+  return cells.map(function(c){ return String(c.r)+String(c.c); }).join('');
+}
+
+function bsDecode(str){
+  var cells=[];
+  for(var i=0;i+1<str.length;i+=2)
+    cells.push({r:parseInt(str[i]),c:parseInt(str[i+1])});
+  return cells;
+}
+
+function bsBaseUrl(){
+  return window.location.href.split('#')[0];
+}
+
+function bsPlaceFleet(){
+  var grid=[];
+  for(var i=0;i<10;i++) grid.push(new Array(10).fill(0));
+  var cells=[];
+
+  function canPlace(r,c,len,horiz){
+    for(var i=0;i<len;i++){
+      var sr=r+(horiz?0:i), sc=c+(horiz?i:0);
+      if(sr<0||sr>=10||sc<0||sc>=10) return false;
+      if(grid[sr][sc]!==0) return false;
+      for(var dr=-1;dr<=1;dr++) for(var dc=-1;dc<=1;dc++){
+        var nr=sr+dr, nc=sc+dc;
+        if(nr>=0&&nr<10&&nc>=0&&nc<10&&grid[nr][nc]===1) return false;
+      }
+    }
+    return true;
+  }
+
+  BS.ships.forEach(function(ship){
+    var placed=false, attempts=0;
+    while(!placed&&attempts<2000){
+      attempts++;
+      var horiz=Math.random()>0.5;
+      var r=Math.floor(Math.random()*(horiz?10:11-ship.len));
+      var c=Math.floor(Math.random()*(horiz?11-ship.len:10));
+      if(canPlace(r,c,ship.len,horiz)){
+        for(var i=0;i<ship.len;i++){
+          var sr=r+(horiz?0:i), sc=c+(horiz?i:0);
+          grid[sr][sc]=1;
+          cells.push({r:sr,c:sc});
+        }
+        placed=true;
+      }
+    }
+  });
+  return cells;
+}
+
+function bsGetShipSets(cells){
+  var sets=[], idx=0;
+  BS.ships.forEach(function(ship){
+    var set=new Set();
+    for(var i=0;i<ship.len;i++){
+      if(cells[idx]) set.add(cells[idx].r+','+cells[idx].c);
+      idx++;
+    }
+    sets.push(set);
+  });
+  return sets;
+}
+
+function bsRenderGrid(shipCells, attackCells, showAttacks){
+  var shipSet=new Set(shipCells.map(function(c){ return c.r+','+c.c; }));
+  var attackSet=new Set((attackCells||[]).map(function(c){ return c.r+','+c.c; }));
+  var sunkSet=new Set();
+  if(showAttacks){
+    bsGetShipSets(shipCells).forEach(function(set){
+      var allHit=true;
+      set.forEach(function(key){ if(!attackSet.has(key)) allHit=false; });
+      if(allHit) set.forEach(function(key){ sunkSet.add(key); });
+    });
+  }
+  var rows='ABCDEFGHIJ';
+  var html='<div class="bs-grid-outer">';
+  html+='<div></div>';
+  for(var c=1;c<=10;c++) html+='<div class="bs-col-lbl">'+c+'</div>';
+  for(var r=0;r<10;r++){
+    html+='<div class="bs-row-lbl">'+rows[r]+'</div>';
+    for(var cc=0;cc<10;cc++){
+      var key=r+','+cc, cls='bs-cell', content='';
+      if(shipSet.has(key)){
+        if(showAttacks&&attackSet.has(key)){
+          cls+=sunkSet.has(key)?' hit sunk':' hit';
+          content='💥';
+        } else{ cls+=' ship'; }
+      } else if(showAttacks&&attackSet.has(key)){
+        cls+=' miss'; content='✕';
+      }
+      html+='<div class="'+cls+'" data-r="'+r+'" data-c="'+cc+'">'+content+'</div>';
+    }
+  }
+  html+='</div>';
+  return html;
+}
+
+function bsRenderAttackGrid(){
+  var rows='ABCDEFGHIJ';
+  var html='<div class="bs-grid-outer">';
+  html+='<div></div>';
+  for(var c=1;c<=10;c++) html+='<div class="bs-col-lbl">'+c+'</div>';
+  for(var r=0;r<10;r++){
+    html+='<div class="bs-row-lbl">'+rows[r]+'</div>';
+    for(var cc=0;cc<10;cc++){
+      html+='<div class="bs-cell untapped" data-r="'+r+'" data-c="'+cc+'"></div>';
+    }
+  }
+  html+='</div>';
+  return html;
+}
+
+function initBattleships(){
+  BS.wrap=document.getElementById('bs-wrap');
+  var params=bsParseHash();
+  if(params.b&&!params.s&&!params.a){
+    var decoded=bsDecode(params.b);
+    if(decoded.length!==16){ if(!BS.myBoard) BS.myBoard=bsPlaceFleet(); bsShowHome(false); return; }
+    BS.attackBoard=decoded;
+    if(BS.shots.length===0) BS.shots=[];
+    bsShowAttack();
+    if(BS.shots.length>0) bsRestoreShots();
+  } else if(params.b&&params.s&&params.a){
+    if(!BS.myBoard) BS.myBoard=bsPlaceFleet();
+    var decodedBoard=bsDecode(params.b);
+    if(decodedBoard.length!==16){ if(!BS.myBoard) BS.myBoard=bsPlaceFleet(); bsShowHome(false); return; }
+    BS.attackedBoard=decodedBoard;
+    BS.opponentScore=parseInt(params.s);
+    BS.opponentAttacks=bsDecode(params.a);
+    bsShowHome(true);
+  } else {
+    if(!BS.myBoard) BS.myBoard=bsPlaceFleet();
+    bsShowHome(false);
+  }
+}
+
+function bsShowHome(withReplay){
+  var fleetEmojis=['🛳','🚢','⛵','🚤','🛥'];
+  var fleetHtml=BS.ships.map(function(s,i){
+    return fleetEmojis[i]+' '+s.name+'&nbsp;&nbsp;'+'▮'.repeat(s.len);
+  }).join('<br>');
+  var replayHtml='';
+  if(withReplay&&BS.attackedBoard&&BS.opponentAttacks){
+    replayHtml=
+      '<div class="bs-replay-section">'+
+        '<div class="bs-replay-title">💥 OPPONENT SANK YOUR FLEET IN '+BS.opponentScore+' SHOTS</div>'+
+        bsRenderGrid(BS.attackedBoard,BS.opponentAttacks,true)+
+      '</div>';
+  }
+  BS.wrap.innerHTML=
+    '<div class="bs-title">BATTLESHIPS</div>'+
+    '<div class="bs-subtitle">YOUR FLEET IS READY</div>'+
+    replayHtml+
+    bsRenderGrid(BS.myBoard,[],false)+
+    '<div class="bs-fleet-list">'+fleetHtml+'</div>'+
+    '<button class="bs-btn bs-btn-share" id="bs-copy-btn" onclick="bsCopyChallenge()">'+
+      '📋 Copy challenge link</button>'+
+    '<div class="bs-subtitle">Share this link with your opponent<br>'+
+      'They sink your fleet · You sink theirs · Fewest shots wins</div>';
+}
+
+function bsCopyChallenge(){
+  var url=bsBaseUrl()+'#battleships?b='+bsEncode(BS.myBoard);
+  var btn=document.getElementById('bs-copy-btn');
+  navigator.clipboard.writeText(url).then(function(){
+    if(btn) btn.textContent='✅ Copied!';
+    setTimeout(function(){
+      var b=document.getElementById('bs-copy-btn');
+      if(b) b.textContent='📋 Copy challenge link';
+    },2000);
+  }).catch(function(){ prompt('Copy this link:',url); });
+}
+
+function bsShowAttack(){
+  BS.wrap.innerHTML=
+    '<div class="bs-title">BATTLESHIPS</div>'+
+    '<div class="bs-score-row">'+
+      '<span id="bs-shots">💥 SHOTS: 0</span>'+
+      '<span id="bs-sunk">SUNK: 0/5</span>'+
+    '</div>'+
+    bsRenderAttackGrid()+
+    '<div class="bs-sunk-flash" id="bs-sunk-flash"></div>';
+  bsAttachHandlers();
+}
+
+function bsAttachHandlers(){
+  var grid=document.querySelector('.bs-grid-outer');
+  if(!grid) return;
+  grid.addEventListener('pointerdown',function(e){
+    var cell=e.target.closest?e.target.closest('.bs-cell.untapped'):null;
+    if(!cell) return;
+    e.preventDefault();
+    bsFireShot(parseInt(cell.dataset.r),parseInt(cell.dataset.c),cell);
+  });
+}
+
+function bsRestoreShots(){
+  var boardSet=new Set(BS.attackBoard.map(function(p){ return p.r+','+p.c; }));
+  var shipSets=bsGetShipSets(BS.attackBoard);
+  var sunkCount=0;
+  BS.shots.forEach(function(shot){
+    var cell=document.querySelector('.bs-cell[data-r="'+shot.r+'"][data-c="'+shot.c+'"]');
+    if(!cell) return;
+    cell.classList.remove('untapped');
+    if(boardSet.has(shot.r+','+shot.c)){
+      cell.classList.add('hit'); cell.textContent='💥';
+    } else {
+      cell.classList.add('miss'); cell.textContent='✕';
+    }
+  });
+  var hitSet=new Set(BS.shots.map(function(s){ return s.r+','+s.c; }));
+  shipSets.forEach(function(shipSet){
+    var allHit=true;
+    shipSet.forEach(function(key){ if(!hitSet.has(key)) allHit=false; });
+    if(allHit){
+      sunkCount++;
+      shipSet.forEach(function(key){
+        var parts=key.split(',');
+        var sc=document.querySelector('.bs-cell[data-r="'+parts[0]+'"][data-c="'+parts[1]+'"]');
+        if(sc) sc.classList.add('sunk');
+      });
+    }
+  });
+  var shotsEl=document.getElementById('bs-shots');
+  if(shotsEl) shotsEl.textContent='💥 SHOTS: '+BS.shots.length;
+  var sunkEl=document.getElementById('bs-sunk');
+  if(sunkEl) sunkEl.textContent='SUNK: '+sunkCount+'/5';
+}
+
+function bsFireShot(r,c,cell){
+  if(!cell.classList.contains('untapped')) return;
+  cell.classList.remove('untapped');
+  BS.shots.push({r:r,c:c});
+  var boardSet=new Set(BS.attackBoard.map(function(p){ return p.r+','+p.c; }));
+  if(boardSet.has(r+','+c)){
+    cell.classList.add('hit');
+    cell.textContent='💥';
+    bsCheckSunk(r,c);
+  } else {
+    cell.classList.add('miss');
+    cell.textContent='✕';
+  }
+  var shotsEl=document.getElementById('bs-shots');
+  if(shotsEl) shotsEl.textContent='💥 SHOTS: '+BS.shots.length;
+}
+
+function bsCheckSunk(r,c){
+  var hitSet=new Set(BS.shots.map(function(s){ return s.r+','+s.c; }));
+  var shipSets=bsGetShipSets(BS.attackBoard);
+  var sunkCount=0, justSunkName=null;
+  shipSets.forEach(function(shipSet,idx){
+    var allHit=true;
+    shipSet.forEach(function(key){ if(!hitSet.has(key)) allHit=false; });
+    if(allHit){
+      sunkCount++;
+      shipSet.forEach(function(key){
+        var parts=key.split(',');
+        var sc=document.querySelector('.bs-cell[data-r="'+parts[0]+'"][data-c="'+parts[1]+'"]');
+        if(sc) sc.classList.add('sunk');
+      });
+      if(shipSet.has(r+','+c)) justSunkName=BS.ships[idx].name;
+    }
+  });
+  var sunkEl=document.getElementById('bs-sunk');
+  if(sunkEl) sunkEl.textContent='SUNK: '+sunkCount+'/5';
+  if(justSunkName){
+    var flash=document.getElementById('bs-sunk-flash');
+    if(flash) flash.textContent=justSunkName.toUpperCase()+' SUNK! 💥';
+    setTimeout(function(){
+      var el=document.getElementById('bs-sunk-flash');
+      if(el) el.textContent='';
+    },2000);
+  }
+  if(sunkCount===5) setTimeout(bsShowResult,600);
+}
+
+function bsShowResult(){
+  var score=BS.shots.length;
+  var params=bsParseHash();
+  var oppScore=params.s?parseInt(params.s):null;
+  BS.resultUrl=bsBaseUrl()+'#battleships?b='+(params.b||'')+
+    '&s='+score+'&a='+bsEncode(BS.shots);
+  var vsHtml='', winnerHtml='';
+  if(oppScore!==null){
+    var youWin=score<oppScore, tie=score===oppScore;
+    vsHtml=
+      '<div class="bs-vs-row">'+
+        '<div class="bs-vs-score">'+
+          '<div class="bs-vs-name">YOU</div>'+
+          '<div class="bs-vs-num you">'+score+'</div>'+
+        '</div>'+
+        '<div class="bs-vs-sep">vs</div>'+
+        '<div class="bs-vs-score">'+
+          '<div class="bs-vs-name">OPPONENT</div>'+
+          '<div class="bs-vs-num them">'+oppScore+'</div>'+
+        '</div>'+
+      '</div>';
+    winnerHtml=
+      '<div class="bs-winner">'+
+        (tie?'🤝 TIE GAME!':
+         youWin?'🏆 YOU WIN · '+(oppScore-score)+' shots fewer!':
+                '😅 OPPONENT WINS · '+(score-oppScore)+' shots fewer')+
+      '</div>';
+  }
+  BS.wrap.innerHTML=
+    '<div class="bs-title">BATTLESHIPS</div>'+
+    '<div class="bs-result-box">'+
+      '<div class="bs-result-big">'+score+'</div>'+
+      '<div class="bs-result-lbl">shots to sink all 5 ships</div>'+
+    '</div>'+
+    vsHtml+
+    winnerHtml+
+    '<button class="bs-btn bs-btn-share" id="bs-share-btn" onclick="bsCopyResult()">'+
+      '📋 Share your result</button>'+
+    '<button class="bs-btn bs-btn-new" onclick="bsNewGame()">'+
+      '🔄 New game</button>';
+}
+
+function bsCopyResult(){
+  navigator.clipboard.writeText(BS.resultUrl).then(function(){
+    var btn=document.getElementById('bs-share-btn');
+    if(btn) btn.textContent='✅ Copied!';
+    setTimeout(function(){
+      var b=document.getElementById('bs-share-btn');
+      if(b) b.textContent='📋 Share your result';
+    },2000);
+  }).catch(function(){ prompt('Copy this link:',BS.resultUrl); });
+}
+
+function bsNewGame(){
+  BS.myBoard=null;
+  BS.attackBoard=null;
+  BS.attackedBoard=null;
+  BS.shots=[];
+  BS.opponentScore=null;
+  BS.opponentAttacks=null;
+  BS.resultUrl=null;
+  history.replaceState(null,'',bsBaseUrl()+'#battleships');
+  initBattleships();
+}
+
+// ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
 updateCD();setInterval(updateCD,1000);
@@ -2143,6 +2580,10 @@ renderFlightStats('outbound');
 renderFlightDay('outbound');
 renderAirport('stn');
 </script>
+
+<div class="section" id="sec-battleships">
+  <div class="bs-wrap" id="bs-wrap"></div>
+</div>
 
 <div class="section" id="sec-snake">
   <div class="snake-wrap snake-dpad-hidden" id="snake-wrap">
