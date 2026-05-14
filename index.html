@@ -316,6 +316,21 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
   100%   {left:0%;   transform:translateX(-50%) scaleX(-1);}
 }
 #route-plane{position:absolute;top:-8px;font-size:18px;animation:fly-route 10s linear infinite;}
+/* ── SNAKE GAME ── */
+#sec-snake{padding:0;}
+.snake-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 0 0;gap:0;}
+#snake-canvas{display:block;border-radius:10px;border:1px solid rgba(123,47,255,.3);
+  box-shadow:0 0 24px rgba(123,47,255,.15);max-width:100%;}
+.snake-dpad{display:grid;grid-template-columns:60px 60px 60px;
+  grid-template-rows:60px 60px 60px;gap:6px;padding:14px 0;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));}
+.dp-btn{background:rgba(123,47,255,.25);border:1px solid rgba(123,47,255,.5);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#00e5ff;min-width:56px;min-height:56px;cursor:pointer;
+  user-select:none;-webkit-user-select:none;}
+.dp-btn:active{background:rgba(123,47,255,.55);box-shadow:0 0 12px rgba(0,229,255,.4);}
+.dp-empty{background:transparent;border:none;}
+.snake-dpad-hidden .snake-dpad{visibility:hidden;}
 </style>
 
 </head>
@@ -339,6 +354,7 @@ opacity:0;animation:twink var(–d,3s) var(–del,0s) infinite;}
     <div class="nav-tab" onclick="gotoSection('airports')">🛫 Airports</div>
     <div class="nav-tab" onclick="gotoSection('phrases')">🗣 Phrases</div>
     <div class="nav-tab" onclick="gotoSection('emergency')">🚨 SOS</div>
+    <div class="nav-tab" onclick="gotoSection('snake')">🐍 Snake</div>
   </div>
 </nav>
 
@@ -828,6 +844,7 @@ const PACK_DATA = {
 // NAVIGATION
 // ═══════════════════════════════════════════════
 function gotoSection(id){
+  if(id!=='snake' && typeof SN!=='undefined' && SN.screen==='game'){ clearInterval(SN.timer); SN.timer=null; }
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');
@@ -841,6 +858,7 @@ function gotoSection(id){
   if(id==='flightday') renderFlightDay('outbound');
   if(id==='flights'){ renderFlightStats('outbound'); refreshFlightStats(); }
   if(id==='phrases') phTab(null,'basics');
+  if(id==='snake') initSnake();
 }
 
 // ═══════════════════════════════════════════════
@@ -1839,6 +1857,280 @@ function showStatsAge(when){
 
 
 // ═══════════════════════════════════════════════
+// SNAKE GAME
+// ═══════════════════════════════════════════════
+var SN = {
+  canvas: null, ctx: null, wrap: null,
+  screen: 'start',
+  mode: 'steady',
+  score: 0, best: 0,
+  cells: 20,
+  snake: [], dir: {x:1,y:0}, nextDir: {x:1,y:0},
+  food: {x:0,y:0},
+  tick: 150, tickMin: 60,
+  timer: null, foodEaten: 0,
+  active: false
+};
+
+function snSize(){
+  var w = SN.wrap.clientWidth || 320;
+  SN.canvas.width  = w;
+  SN.canvas.height = w;
+  SN.cell = w / SN.cells;
+}
+
+function initSnake(){
+  if(SN.active) return;
+  SN.canvas = document.getElementById('snake-canvas');
+  SN.ctx    = SN.canvas.getContext('2d');
+  SN.wrap   = document.getElementById('snake-wrap');
+  SN.best   = parseInt(localStorage.getItem('snake_best')||'0');
+  var saved = localStorage.getItem('snake_mode');
+  if(saved==='turbo') SN.mode='turbo';
+  snSize();
+  SN.active = true;
+  snDrawStart();
+  window.addEventListener('resize', snHandleResize);
+  document.addEventListener('keydown', snKey);
+  var dirs = {
+    'dp-up':   {x:0,y:-1}, 'dp-down':  {x:0,y:1},
+    'dp-left': {x:-1,y:0}, 'dp-right': {x:1,y:0}
+  };
+  Object.keys(dirs).forEach(function(id){
+    var btn = document.getElementById(id);
+    btn.addEventListener('touchstart', function(e){
+      e.preventDefault();
+      snQueueDir(dirs[id]);
+    }, {passive:false});
+    btn.addEventListener('mousedown', function(){
+      snQueueDir(dirs[id]);
+    });
+  });
+}
+
+function snHandleResize(){
+  if(document.getElementById('sec-snake').classList.contains('active')){
+    snSize();
+    if(SN.screen==='start') snDrawStart();
+    else if(SN.screen==='over') snDrawOver();
+    else snDraw();
+  }
+}
+
+function snKey(e){
+  var map = {ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}};
+  if(map[e.key]){e.preventDefault(); snQueueDir(map[e.key]);}
+}
+
+function snQueueDir(d){
+  if(d.x !== -SN.dir.x || d.y !== -SN.dir.y) SN.nextDir = d;
+}
+
+function snDrawStart(){
+  SN.screen = 'start';
+  SN.wrap.classList.add('snake-dpad-hidden');
+  var c = SN.canvas, ctx = SN.ctx, w = c.width;
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0,0,w,w);
+  ctx.save();
+  ctx.shadowBlur = 24; ctx.shadowColor = '#00e5ff';
+  ctx.fillStyle  = '#00e5ff';
+  ctx.font = 'bold '+Math.round(w*0.15)+'px "Bebas Neue",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SNAKE', w/2, w*0.28);
+  ctx.restore();
+  ctx.fillStyle = 'rgba(0,229,255,.6)';
+  ctx.font = Math.round(w*0.045)+'px "JetBrains Mono",monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('BEST: '+SN.best, w/2, w*0.38);
+  SN._btns = {};
+  snDrawModeBtn(ctx, w, 'STEADY', w*0.5, w*0.56, SN.mode==='steady');
+  snDrawModeBtn(ctx, w, 'TURBO',  w*0.5, w*0.73, SN.mode==='turbo');
+  ctx.fillStyle = 'rgba(0,229,255,.35)';
+  ctx.font = Math.round(w*0.038)+'px "DM Sans",sans-serif';
+  ctx.fillText('tap a mode to play', w/2, w*0.88);
+  SN.canvas.onclick = snHandleStartClick;
+}
+
+function snDrawModeBtn(ctx, w, label, cx, cy, selected){
+  var bw=w*0.55, bh=w*0.1;
+  var x=cx-bw/2, y=cy-bh/2;
+  ctx.save();
+  ctx.strokeStyle = selected ? '#00e5ff' : 'rgba(123,47,255,.5)';
+  ctx.lineWidth   = selected ? 2 : 1;
+  ctx.shadowBlur  = selected ? 14 : 0;
+  ctx.shadowColor = '#00e5ff';
+  ctx.fillStyle   = selected ? 'rgba(0,229,255,.12)' : 'rgba(123,47,255,.1)';
+  ctx.beginPath();
+  ctx.roundRect(x,y,bw,bh,8);
+  ctx.fill(); ctx.stroke();
+  ctx.shadowBlur=selected?10:0;
+  ctx.fillStyle = selected ? '#00e5ff' : 'rgba(123,47,255,.8)';
+  ctx.font = 'bold '+Math.round(w*0.055)+'px "Bebas Neue",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label, cx, cy);
+  ctx.restore();
+  SN._btns[label.toLowerCase()] = {x:x,y:y,w:bw,h:bh};
+}
+
+function snHandleStartClick(e){
+  var rect = SN.canvas.getBoundingClientRect();
+  var scaleX = SN.canvas.width / rect.width;
+  var scaleY = SN.canvas.height / rect.height;
+  var mx = (e.clientX - rect.left) * scaleX;
+  var my = (e.clientY - rect.top)  * scaleY;
+  function hit(b){ return b && mx>=b.x && mx<=b.x+b.w && my>=b.y && my<=b.y+b.h; }
+  if(hit(SN._btns.steady)){ SN.mode='steady'; localStorage.setItem('snake_mode','steady'); snStartGame(); }
+  else if(hit(SN._btns.turbo)){ SN.mode='turbo'; localStorage.setItem('snake_mode','turbo'); snStartGame(); }
+}
+
+function snStartGame(){
+  SN.canvas.onclick = null;
+  SN.screen = 'game';
+  SN.score  = 0;
+  SN.foodEaten = 0;
+  SN.tick   = 150;
+  var mid = Math.floor(SN.cells/2);
+  SN.snake = [{x:mid,y:mid},{x:mid-1,y:mid},{x:mid-2,y:mid}];
+  SN.dir     = {x:1,y:0};
+  SN.nextDir = {x:1,y:0};
+  snSpawnFood();
+  SN.wrap.classList.remove('snake-dpad-hidden');
+  snDraw();
+  clearInterval(SN.timer);
+  SN.timer = setInterval(snTick, SN.tick);
+}
+
+function snSpawnFood(){
+  var occupied = new Set(SN.snake.map(function(s){return s.x+','+s.y;}));
+  var empty = [];
+  for(var x=0;x<SN.cells;x++) for(var y=0;y<SN.cells;y++)
+    if(!occupied.has(x+','+y)) empty.push({x:x,y:y});
+  SN.food = empty[Math.floor(Math.random()*empty.length)];
+}
+
+function snTick(){
+  SN.dir = SN.nextDir;
+  var head = {x: SN.snake[0].x + SN.dir.x, y: SN.snake[0].y + SN.dir.y};
+  if(head.x<0||head.x>=SN.cells||head.y<0||head.y>=SN.cells){ snGameOver(); return; }
+  for(var i=0;i<SN.snake.length;i++)
+    if(SN.snake[i].x===head.x && SN.snake[i].y===head.y){ snGameOver(); return; }
+  SN.snake.unshift(head);
+  if(head.x===SN.food.x && head.y===SN.food.y){
+    SN.score += 10;
+    SN.foodEaten++;
+    snSpawnFood();
+    if(SN.mode==='turbo'){
+      SN.tick = Math.max(SN.tickMin, 150 - SN.foodEaten*5);
+      clearInterval(SN.timer);
+      SN.timer = setInterval(snTick, SN.tick);
+    }
+  } else {
+    SN.snake.pop();
+  }
+  snDraw();
+}
+
+function snDraw(){
+  var c=SN.canvas, ctx=SN.ctx, w=c.width, cs=SN.cell;
+  ctx.fillStyle='#0a0a1a'; ctx.fillRect(0,0,w,w);
+  ctx.strokeStyle='rgba(123,47,255,.08)'; ctx.lineWidth=1;
+  for(var i=0;i<=SN.cells;i++){
+    ctx.beginPath(); ctx.moveTo(i*cs,0); ctx.lineTo(i*cs,w); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i*cs); ctx.lineTo(w,i*cs); ctx.stroke();
+  }
+  ctx.save();
+  ctx.shadowBlur=14; ctx.shadowColor='#ff2d9b'; ctx.fillStyle='#ff2d9b';
+  ctx.beginPath();
+  ctx.arc(SN.food.x*cs+cs/2, SN.food.y*cs+cs/2, cs*0.38, 0, Math.PI*2);
+  ctx.fill(); ctx.restore();
+  ctx.save();
+  ctx.shadowBlur=12; ctx.shadowColor='#00e5ff'; ctx.fillStyle='#00e5ff';
+  var pad=Math.max(1,cs*0.08);
+  for(var i=1;i<SN.snake.length;i++){
+    var s=SN.snake[i];
+    ctx.beginPath();
+    ctx.roundRect(s.x*cs+pad, s.y*cs+pad, cs-pad*2, cs-pad*2, 3);
+    ctx.fill();
+  }
+  ctx.restore();
+  ctx.save();
+  ctx.shadowBlur=16; ctx.shadowColor='#7b2fff'; ctx.fillStyle='#7b2fff';
+  var h=SN.snake[0];
+  ctx.beginPath();
+  ctx.roundRect(h.x*cs+pad, h.y*cs+pad, cs-pad*2, cs-pad*2, 3);
+  ctx.fill(); ctx.restore();
+  ctx.save();
+  ctx.shadowBlur=6; ctx.shadowColor='#00e5ff'; ctx.fillStyle='#00e5ff';
+  ctx.font=Math.round(cs*0.7)+'px "JetBrains Mono",monospace';
+  ctx.textBaseline='top';
+  ctx.textAlign='left';  ctx.fillText(SN.score, cs*0.4, cs*0.3);
+  ctx.textAlign='right'; ctx.fillText(SN.mode.toUpperCase(), w-cs*0.4, cs*0.3);
+  ctx.restore();
+}
+
+function snGameOver(){
+  clearInterval(SN.timer);
+  SN.screen='over';
+  SN.wrap.classList.add('snake-dpad-hidden');
+  var newBest = SN.score > SN.best;
+  if(newBest){ SN.best=SN.score; localStorage.setItem('snake_best',SN.best); }
+  snDrawOver(newBest);
+  SN.canvas.onclick = snHandleOverClick;
+}
+
+function snDrawOver(newBest){
+  var c=SN.canvas, ctx=SN.ctx, w=c.width;
+  ctx.fillStyle='rgba(10,10,26,.78)'; ctx.fillRect(0,0,w,w);
+  ctx.save();
+  ctx.shadowBlur=20; ctx.shadowColor='#ff4d4d'; ctx.fillStyle='#ff4d4d';
+  ctx.font='bold '+Math.round(w*0.13)+'px "Bebas Neue",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.fillText('GAME OVER', w/2, w*0.28);
+  ctx.restore();
+  ctx.save();
+  ctx.shadowBlur=6; ctx.shadowColor='#00e5ff'; ctx.fillStyle='#00e5ff';
+  ctx.font=Math.round(w*0.06)+'px "JetBrains Mono",monospace';
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.fillText('SCORE: '+SN.score, w/2, w*0.40);
+  ctx.restore();
+  if(newBest){
+    ctx.save();
+    ctx.shadowBlur=12; ctx.shadowColor='#ffd166'; ctx.fillStyle='#ffd166';
+    ctx.font='bold '+Math.round(w*0.052)+'px "Bebas Neue",sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillText('★ NEW BEST! ★', w/2, w*0.51);
+    ctx.restore();
+  }
+  SN._overBtns = {};
+  snDrawOverBtn(ctx, w, 'PLAY AGAIN', w/2, w*0.65);
+  snDrawOverBtn(ctx, w, 'MENU', w/2, w*0.79);
+}
+
+function snDrawOverBtn(ctx, w, label, cx, cy){
+  var bw=w*0.55, bh=w*0.1, x=cx-bw/2, y=cy-bh/2;
+  ctx.save();
+  ctx.strokeStyle='rgba(0,229,255,.5)'; ctx.lineWidth=1;
+  ctx.fillStyle='rgba(0,229,255,.1)';
+  ctx.beginPath(); ctx.roundRect(x,y,bw,bh,8); ctx.fill(); ctx.stroke();
+  ctx.shadowBlur=6; ctx.shadowColor='#00e5ff'; ctx.fillStyle='#00e5ff';
+  ctx.font='bold '+Math.round(w*0.055)+'px "Bebas Neue",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label, cx, cy);
+  ctx.restore();
+  SN._overBtns[label.toLowerCase().replace(' ','_')] = {x:x,y:y,w:bw,h:bh};
+}
+
+function snHandleOverClick(e){
+  var rect=SN.canvas.getBoundingClientRect();
+  var scaleX=SN.canvas.width/rect.width, scaleY=SN.canvas.height/rect.height;
+  var mx=(e.clientX-rect.left)*scaleX, my=(e.clientY-rect.top)*scaleY;
+  function hit(b){ return b&&mx>=b.x&&mx<=b.x+b.w&&my>=b.y&&my<=b.y+b.h; }
+  if(hit(SN._overBtns.play_again)){ SN.canvas.onclick=null; SN._overBtns=null; snStartGame(); }
+  else if(hit(SN._overBtns.menu))  { SN.canvas.onclick=null; SN._overBtns=null; SN._btns=null; snDrawStart(); }
+}
+
+// ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
 updateCD();setInterval(updateCD,1000);
@@ -1851,6 +2143,23 @@ renderFlightStats('outbound');
 renderFlightDay('outbound');
 renderAirport('stn');
 </script>
+
+<div class="section" id="sec-snake">
+  <div class="snake-wrap snake-dpad-hidden" id="snake-wrap">
+    <canvas id="snake-canvas"></canvas>
+    <div class="snake-dpad">
+      <div class="dp-empty"></div>
+      <div class="dp-btn" id="dp-up">▲</div>
+      <div class="dp-empty"></div>
+      <div class="dp-btn" id="dp-left">◀</div>
+      <div class="dp-empty"></div>
+      <div class="dp-btn" id="dp-right">▶</div>
+      <div class="dp-empty"></div>
+      <div class="dp-btn" id="dp-down">▼</div>
+      <div class="dp-empty"></div>
+    </div>
+  </div>
+</div>
 
 <div id="fd-backdrop" onclick="hideFlightDetail()"></div>
 <div id="fd-sheet">
