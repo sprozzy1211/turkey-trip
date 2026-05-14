@@ -234,6 +234,27 @@ border-radius:6px;padding:4px 8px;border:1px solid rgba(77,166,255,.2);}
 transform:translateX(-50%);background:var(–sky);border:1px solid rgba(255,255,255,.15);
 padding:4px 8px;border-radius:6px;font-size:10px;white-space:nowrap;color:var(–white);z-index:10;}
 .b-lbl{font-size:8px;color:var(–muted);writing-mode:vertical-rl;transform:rotate(180deg);}
+/* ── FLIGHT DETAIL SHEET ── */
+#fd-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;}
+#fd-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--card);
+border-radius:18px 18px 0 0;z-index:201;transform:translateY(100%);
+transition:transform .3s ease;padding-bottom:env(safe-area-inset-bottom,0px);overflow:hidden;}
+#fd-sheet.fd-open{transform:translateY(0);}
+.fd-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:14px auto 16px;}
+.fd-inner{padding:0 20px 24px;}
+.fd-flightnum{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--sun);letter-spacing:2px;}
+.fd-route{font-size:12px;color:var(--muted);margin-bottom:2px;}
+.fd-date{font-size:11px;color:var(--dim);margin-bottom:14px;}
+.fd-times{display:flex;gap:10px;margin:12px 0;}
+.fd-time-block{flex:1;background:rgba(0,0,0,.25);border-radius:10px;padding:10px;text-align:center;}
+.fd-time-lbl{font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.fd-time-val{font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--white);}
+.fd-time-tz{font-size:9px;color:var(--dim);margin-top:2px;}
+.fd-note{font-size:10px;color:var(--dim);font-style:italic;margin:10px 0 12px;}
+.fd-ext-link{display:flex;align-items:center;gap:8px;padding:11px 14px;
+background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+border-radius:10px;font-size:13px;color:var(--white);text-decoration:none;}
+.fd-arrow{margin-left:auto;color:var(--muted);}
 .donut-row{display:flex;align-items:center;gap:20px;margin-top:10px;}
 .donut-wrap{position:relative;width:110px;height:110px;flex-shrink:0;}
 .donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
@@ -855,6 +876,73 @@ function updateClocks(){
 }
 
 // ═══════════════════════════════════════════════
+// FLIGHT BAR DETAIL SHEET
+// ═══════════════════════════════════════════════
+function hideFlightDetail(){
+  document.getElementById('fd-sheet').classList.remove('fd-open');
+  document.getElementById('fd-backdrop').style.display='none';
+}
+
+function showFlightDetail(which,idx){
+  var fd=FLIGHTS[which];
+  if(!fd||!fd.history[idx]) return;
+  var entry=fd.history[idx];
+  var label=entry[0],status=entry[1],mins=entry[2];
+
+  var dateStr=label;
+
+  // Status pill styling
+  var pillCol=status==='ontime'?'var(--green)':status==='delayed'?'var(--red)':'var(--blue)';
+  var pillBg=status==='ontime'?'rgba(34,214,122,.12)':status==='delayed'?'rgba(255,77,77,.15)':'rgba(77,166,255,.12)';
+  var pillBorder=status==='ontime'?'rgba(34,214,122,.35)':status==='delayed'?'rgba(255,77,77,.4)':'rgba(77,166,255,.35)';
+  var pillLabel=status==='ontime'?'ON TIME':status==='delayed'?'DELAYED':'EARLY';
+
+  // Delay/early line (empty string = on time, line is omitted)
+  var delayLine='';
+  if(status==='delayed') delayLine='<div style="font-size:12px;color:var(--red);margin-top:4px;">+'+mins+' min late</div>';
+  if(status==='early') delayLine='<div style="font-size:12px;color:var(--blue);margin-top:4px;">'+Math.abs(mins)+' min early</div>';
+
+  // Scheduled times — same every flight on this route
+  var depTime=which==='outbound'?'22:30':'19:20';
+  var depTZ=which==='outbound'?'BST':'TRT';
+  var arrTime=which==='outbound'?'02:15':'23:20';
+  var arrTZ=which==='outbound'?'TRT · next day':'BST';
+  var fr24url=which==='outbound'
+    ?'https://www.flightradar24.com/data/flights/xq941'
+    :'https://www.flightradar24.com/data/flights/xq940';
+
+  document.getElementById('fd-inner').innerHTML=`
+    <div class="fd-flightnum">${fd.num}</div>
+    <div class="fd-route">${fd.label}</div>
+    <div class="fd-date">${dateStr}</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;
+        font-weight:700;letter-spacing:.5px;background:${pillBg};
+        border:1px solid ${pillBorder};color:${pillCol};">${pillLabel}</div>
+      ${delayLine}
+    </div>
+    <div class="fd-times">
+      <div class="fd-time-block">
+        <div class="fd-time-lbl">Departure</div>
+        <div class="fd-time-val">${depTime}</div>
+        <div class="fd-time-tz">${depTZ} · Scheduled</div>
+      </div>
+      <div class="fd-time-block">
+        <div class="fd-time-lbl">Arrival</div>
+        <div class="fd-time-val">${arrTime}</div>
+        <div class="fd-time-tz">${arrTZ} · Scheduled</div>
+      </div>
+    </div>
+    <div class="fd-note">Simulated data — tap below to check real records on FlightRadar24</div>
+    <a href="${fr24url}" target="_blank" class="fd-ext-link">
+      📡 Check ${fd.num} on FlightRadar24 <span class="fd-arrow">→</span>
+    </a>
+  `;
+  document.getElementById('fd-backdrop').style.display='block';
+  document.getElementById('fd-sheet').classList.add('fd-open');
+}
+
+// ═══════════════════════════════════════════════
 // CURRENCY (Open Exchange Rates / exchangerate.host)
 // ═══════════════════════════════════════════════
 let fxRates={GBP:1,TRY:null,EUR:null};
@@ -1225,11 +1313,11 @@ function renderFlightStats(w){
   const pOn=Math.round(ont/tot*100),pDel=Math.round(del/tot*100),pEar=Math.round(ear/tot*100);
 
   const barMax=Math.max(...h.map(x=>Math.abs(x[2])||1));
-  const bars=h.map(x=>{
+  const bars=h.map((x,i)=>{
     var col=x[1]==='ontime'?'var(--green)':x[1]==='delayed'?'var(--red)':'var(--blue)';
     const ht=Math.max(6,Math.round((Math.abs(x[2])/barMax)*70));
     const tip=x[1]==='delayed'?`${x[0]}: +${x[2]}m`:x[1]==='early'?`${x[0]}: ${x[2]}m early`:`${x[0]}: on time`;
-    return `<div class="b-wrap"><div class="b-bar" style="background:${col};height:${ht}px" data-tip="${tip}"></div><div class="b-lbl">${x[0]}</div></div>`;
+    return `<div class="b-wrap"><div class="b-bar" style="background:${col};height:${ht}px" data-tip="${tip}" onclick="showFlightDetail('${w}',${i})"></div><div class="b-lbl">${x[0]}</div></div>`;
   }).join('');
 
   var r=44,cx=55,cy=55,circ=2*Math.PI*r;
@@ -1753,6 +1841,12 @@ renderFlightStats('outbound');
 renderFlightDay('outbound');
 renderAirport('stn');
 </script>
+
+<div id="fd-backdrop" onclick="hideFlightDetail()"></div>
+<div id="fd-sheet">
+  <div class="fd-handle"></div>
+  <div class="fd-inner" id="fd-inner"></div>
+</div>
 
 </body>
 </html>
